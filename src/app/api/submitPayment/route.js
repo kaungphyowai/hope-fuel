@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import db from "../../utilites/db";
 
 
-async function  InsertCustomer(customerName, customerEmail, AgentID,ManyChatID, ContactPhone,Amount,Month)
+async function  InsertCustomer(customerName, customerEmail, AgentID,ManyChatID, Contactlink,Amount,Month)
 {
     const query = `
-    INSERT INTO Customer (Name, Email, AgentID, ManyChatID, ContactPhoneNo ) VALUES (?, ?, ?, ?, ?)
+    INSERT INTO Customer (Name, Email, AgentID, ManyChatID, Contact_link) VALUES (?, ?, ?, ?, ?)
     `;
-    const values = [customerName, customerEmail, AgentID, ManyChatID, ContactPhone];
+    const values = [customerName, customerEmail, AgentID, ManyChatID, Contactlink];
        try {
       const result = await db(query, values);
      // console.log("Result: ", result);
@@ -41,9 +41,9 @@ export async function POST(req){
       let json = await req.json();
 
       const { customerName, customerEmail, agentID, supportRegionID, 
-        manyChatID, contactPhone, amount, month ,note,walletId} = json;
+        manyChatID, contactLink, amount, month ,note,walletId} = json;
       
-       const customerId = await InsertCustomer(customerName, customerEmail, agentID, manyChatID, contactPhone, amount, month);
+       const customerId = await InsertCustomer(customerName, customerEmail, agentID, manyChatID, contactLink, amount, month);
        // console.log("customerId: ",customerId);
         
         const noteId = await createNote(note,agentID);
