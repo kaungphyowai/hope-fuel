@@ -5,7 +5,7 @@ import db from "../../utilites/db";
 async function  InsertCustomer(customerName, customerEmail, AgentID,ManyChatID, Contactlink,Amount,Month)
 {
     const query = `
-    INSERT INTO Customer (Name, Email, AgentID, ManyChatID, Contact_link) VALUES (?, ?, ?, ?, ?)
+    INSERT INTO Customer (Name, Email, AgentID, ManyChatID, ContactLink) VALUES (?, ?, ?, ?, ?)
     `;
     const values = [customerName, customerEmail, AgentID, ManyChatID, Contactlink];
        try {
