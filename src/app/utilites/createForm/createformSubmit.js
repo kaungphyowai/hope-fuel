@@ -10,6 +10,7 @@ export default async function createFormSubmit(event, currency, supportRegion ,f
     setloading(true)
     
     const data = new FormData(event.currentTarget);
+    console.log("Data From createFormSubmit: ", data.getAll());
     const amount = data.get("amount")
     const month = data.get("month");
     const manychat = data.get("manyChat")
