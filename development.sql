@@ -74,7 +74,7 @@ CREATE TABLE Transactions (
     SupportRegionID INT,
     WalletID INT,
     Amount FLOAT,
-    Screenshot BLOB,
+    Screenshot VARCHAR(2048),
     AgentID INT,
     PaymentCheck BOOLEAN,
     PaymentCheckTime DATE,
@@ -138,5 +138,5 @@ VALUES
 -- Insert data into Transactions Table
 INSERT INTO Transactions (TransactionID, CustomerID, SupportRegionID, WalletID, Amount, Screenshot, AgentID, PaymentCheck, PaymentCheckTime, NoteID, TransactionDate, PaymentDenied, Month)
 VALUES 
-(1, 1, 1, 1, 100.00, NULL, 1, TRUE, '2024-07-01', 1, '2024-07-01', FALSE, 7),
-(2, 2, 2, 2, 200.00, NULL, 2, FALSE, '2024-07-02', 2, '2024-07-02', TRUE, 7);
+(1, 1, 1, 1, 100.00, "https://your-bucket-name.s3.amazonaws.com/path/to/image.png", 1, TRUE, '2024-07-01', 1, '2024-07-01', FALSE, 7),
+(2, 2, 2, 2, 200.00, "https://your-bucket-name.s3.amazonaws.com/path/to/image.png", 2, FALSE, '2024-07-02', 2, '2024-07-02', TRUE, 7);

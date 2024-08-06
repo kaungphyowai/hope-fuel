@@ -85,13 +85,15 @@ function HomePage({ signOut, user }) {
           },
           body: JSON.stringify({ awsId: agentId }),
         });
-      }, 9000);
+      }, 3000);
     }
   };
   isCreatingAgent = false;
 
   //Get the page is unable or not
   React.useEffect(() => {
+
+    
     checkAgentStatus();
 
     client.graphql({ query: listApps }).then((result) => {
