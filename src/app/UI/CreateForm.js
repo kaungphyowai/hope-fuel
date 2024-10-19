@@ -87,7 +87,7 @@ const CreateForm = ({userInfo, setloading}) => {
   console.log("AgentId from createform: " + agentId);
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    
     if (files.length == 0) {
       setfileExist(false);
       return;

@@ -74,7 +74,7 @@ export default async function createFormSubmit(event, currency, supportRegion ,f
 
   let res = await answ.json();
   console.log("My answer id: " + res);
-  location.reload();
+ location.reload();
 }
 // var raw = JSON.stringify({
 //   "records": [

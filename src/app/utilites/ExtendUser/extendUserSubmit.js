@@ -190,7 +190,7 @@ console.log("Raw:"+ raw);
       let answ = await fetch('/api/submitPaymentolduser/', requestOptions)
       let {status} =  await answ.json()
       console.log(status)
-      location.reload()
+     location.reload()
     }
 
 

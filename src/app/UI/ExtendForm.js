@@ -94,6 +94,7 @@ const ExtendForm = ({userInfo, setloading}) => {
         component="form"
         sx={{ mt: 1 }}
         onSubmit={(event) =>
+         
           extendFormSubmit(
             event,
             currency,
@@ -260,11 +261,10 @@ const ExtendForm = ({userInfo, setloading}) => {
           }}
         >
           <Dropzone
-            onDrop={(acceptedFiles) =>
-            { filehandler(acceptedFiles, setfiles, files,setUploadProgress)
-              setfileExist(true)}
-
-            }
+            onDrop={(acceptedFiles) => {
+              filehandler(acceptedFiles, setfiles, files, setUploadProgress);
+              setfileExist(true);
+            }}
             accept={["text/*, img/*"]}
           >
             {({ getRootProps, getInputProps }) => (

@@ -34,12 +34,12 @@ export async function POST(request) {
     const obj = await request.json()
     console.log("Obj from extendUserAPI: ", obj)
 
-    // if (!obj['screenShot']) {
-    //   return NextResponse.json(
-    //     { error: "You need to provide a screenshot" },
-    //     { status: 400 }
-    //   );
-    // }
+    if (!obj['screenShot']) {
+      return NextResponse.json(
+        { error: "You need to provide a screenshot" },
+        { status: 400 }
+      );
+    }
 
 
     let [result] = await db("Select ExpireDate from Customer where CustomerID=?", [obj['customerId']])
@@ -101,7 +101,7 @@ export async function POST(request) {
     // add the transaction id and agentid in the same one
 
 
-    // const screenShotIds = await createScreenShot(obj['screenShot'], transactionId)
+     const screenShotIds = await createScreenShot(obj['screenShot'], transactionId)
     return Response.json(result)
   } catch (error) {
     console.error("Error inserting customer:", error);
