@@ -1,17 +1,17 @@
 // pages/api/getTransactionInfo.js
 
-import { NextResponse } from "next/server";
-import db from "../../utilites/db";
+import { NextResponse } from 'next/server';
+import db from '../../utilites/db';
 
 export async function GET(req) {
   const url = new URL(req.url);
-  const customerName = url.searchParams.get("customerName");
-  const customerEmail = url.searchParams.get("customerEmail");
+  const customerName = url.searchParams.get('customerName');
+  const customerEmail = url.searchParams.get('customerEmail');
 
   if (!customerName || !customerEmail) {
     return NextResponse.json(
-      { error: "Customer name and email are required" },
-      { status: 400 }
+      { error: 'Customer name and email are required' },
+      { status: 400 },
     );
   }
 
@@ -49,10 +49,10 @@ export async function GET(req) {
     const rows = await db(query, values);
     return NextResponse.json(rows, { status: 200 });
   } catch (error) {
-    console.error("Database query error:", error);
+    console.error('Database query error:', error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { error: 'Internal Server Error' },
+      { status: 500 },
     );
   }
 }

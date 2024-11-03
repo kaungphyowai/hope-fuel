@@ -5,12 +5,12 @@
  **************************************************************************/
 
 /* eslint-disable */
-import * as React from "react";
-import { Button, Flex, Grid, SwitchField } from "@aws-amplify/ui-react";
-import { fetchByPath, getOverrideProps, validateField } from "./utils";
-import { generateClient } from "aws-amplify/api";
-import { getApp } from "../graphql/queries";
-import { updateApp } from "../graphql/mutations";
+import * as React from 'react';
+import { Button, Flex, Grid, SwitchField } from '@aws-amplify/ui-react';
+import { fetchByPath, getOverrideProps, validateField } from './utils';
+import { generateClient } from 'aws-amplify/api';
+import { getApp } from '../graphql/queries';
+import { updateApp } from '../graphql/mutations';
 const client = generateClient();
 export default function AppUpdateForm(props) {
   const {
@@ -42,7 +42,7 @@ export default function AppUpdateForm(props) {
       const record = idProp
         ? (
             await client.graphql({
-              query: getApp.replaceAll("__typename", ""),
+              query: getApp.replaceAll('__typename', ''),
               variables: { id: idProp },
             })
           )?.data?.getApp
@@ -58,7 +58,7 @@ export default function AppUpdateForm(props) {
   const runValidationTasks = async (
     fieldName,
     currentValue,
-    getDisplayValue
+    getDisplayValue,
   ) => {
     const value =
       currentValue && getDisplayValue
@@ -88,16 +88,16 @@ export default function AppUpdateForm(props) {
             if (Array.isArray(modelFields[fieldName])) {
               promises.push(
                 ...modelFields[fieldName].map((item) =>
-                  runValidationTasks(fieldName, item)
-                )
+                  runValidationTasks(fieldName, item),
+                ),
               );
               return promises;
             }
             promises.push(
-              runValidationTasks(fieldName, modelFields[fieldName])
+              runValidationTasks(fieldName, modelFields[fieldName]),
             );
             return promises;
-          }, [])
+          }, []),
         );
         if (validationResponses.some((r) => r.hasError)) {
           return;
@@ -107,12 +107,12 @@ export default function AppUpdateForm(props) {
         }
         try {
           Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value === "") {
+            if (typeof value === 'string' && value === '') {
               modelFields[key] = null;
             }
           });
           await client.graphql({
-            query: updateApp.replaceAll("__typename", ""),
+            query: updateApp.replaceAll('__typename', ''),
             variables: {
               input: {
                 id: appRecord.id,
@@ -125,12 +125,12 @@ export default function AppUpdateForm(props) {
           }
         } catch (err) {
           if (onError) {
-            const messages = err.errors.map((e) => e.message).join("\n");
+            const messages = err.errors.map((e) => e.message).join('\n');
             onError(modelFields, messages);
           }
         }
       }}
-      {...getOverrideProps(overrides, "AppUpdateForm")}
+      {...getOverrideProps(overrides, 'AppUpdateForm')}
       {...rest}
     >
       <SwitchField
@@ -148,18 +148,18 @@ export default function AppUpdateForm(props) {
             value = result?.status ?? value;
           }
           if (errors.status?.hasError) {
-            runValidationTasks("status", value);
+            runValidationTasks('status', value);
           }
           setStatus(value);
         }}
-        onBlur={() => runValidationTasks("status", status)}
+        onBlur={() => runValidationTasks('status', status)}
         errorMessage={errors.status?.errorMessage}
         hasError={errors.status?.hasError}
-        {...getOverrideProps(overrides, "status")}
+        {...getOverrideProps(overrides, 'status')}
       ></SwitchField>
       <Flex
         justifyContent="space-between"
-        {...getOverrideProps(overrides, "CTAFlex")}
+        {...getOverrideProps(overrides, 'CTAFlex')}
       >
         <Button
           children="Reset"
@@ -169,11 +169,11 @@ export default function AppUpdateForm(props) {
             resetStateValues();
           }}
           isDisabled={!(idProp || appModelProp)}
-          {...getOverrideProps(overrides, "ResetButton")}
+          {...getOverrideProps(overrides, 'ResetButton')}
         ></Button>
         <Flex
           gap="15px"
-          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
+          {...getOverrideProps(overrides, 'RightAlignCTASubFlex')}
         >
           <Button
             children="Submit"
@@ -183,7 +183,7 @@ export default function AppUpdateForm(props) {
               !(idProp || appModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
-            {...getOverrideProps(overrides, "SubmitButton")}
+            {...getOverrideProps(overrides, 'SubmitButton')}
           ></Button>
         </Flex>
       </Flex>

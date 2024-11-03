@@ -1,31 +1,27 @@
-import React, { useContext } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import React, { useContext } from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import getScreenShotUrl from "../../utilites/getScreenShotUrl";
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import getScreenShotUrl from '../../utilites/getScreenShotUrl';
 
 const PaymentTeam = () => {
   // State for holding the row that's being confirmed/denied
   const [selectedRow, setSelectedRow] = React.useState(null); // Holds the row data for the active dialog
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [deinedOpen, setDeinedOpen] = React.useState(false);
-
-
-  
-
 
   function createData(
     HopeFuelID,
@@ -38,7 +34,7 @@ const PaymentTeam = () => {
     screenshot,
     manychatid,
     status,
-    email
+    email,
   ) {
     return {
       HopeFuelID,
@@ -59,25 +55,25 @@ const PaymentTeam = () => {
 
   const rows = data.map((row) => {
     return createData(
-      row["HopeFuelID"],
-      row["CurrencyCode"],
-      row["Amount"],
-      row["WalletName"],
-      row["Name"],
-      row["AWSID"],
-      row["Month"],
-      row["ScreenShots"],
-      row["ManyChatID"],
-      "Pending",
-      row["Email"],
-      "Confirm"
+      row['HopeFuelID'],
+      row['CurrencyCode'],
+      row['Amount'],
+      row['WalletName'],
+      row['Name'],
+      row['AWSID'],
+      row['Month'],
+      row['ScreenShots'],
+      row['ManyChatID'],
+      'Pending',
+      row['Email'],
+      'Confirm',
     );
   });
 
   const handleScreenShotClick = async (url) => {
-    let tmpURLObj = url
-    if (tmpURLObj ) {
-      window.open(tmpURLObj, "_blank");
+    let tmpURLObj = url;
+    if (tmpURLObj) {
+      window.open(tmpURLObj, '_blank');
     }
   };
 
@@ -102,41 +98,39 @@ const PaymentTeam = () => {
   };
 
   const handleAgree = (row) => {
-   // console.log("agree");
-   // console.log(row);
+    // console.log("agree");
+    // console.log(row);
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Content-Type', 'application/json');
 
     const raw = JSON.stringify({
       denied: 0,
       HopeFuelID: row.HopeFuelID,
     });
-    
 
     const requestOptions = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
       body: raw,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
-    fetch("api/paymentConfirmOrDeined", requestOptions)
-    .then((response) => {if(response.ok) {
-      console.log("Payment Confirmed");
-      setData(
-        (prevData) =>
-          prevData.filter((item) => item.HopeFuelID !== row.HopeFuelID) 
-      );
-    }
+    fetch('api/paymentConfirmOrDeined', requestOptions).then((response) => {
+      if (response.ok) {
+        console.log('Payment Confirmed');
+        setData((prevData) =>
+          prevData.filter((item) => item.HopeFuelID !== row.HopeFuelID),
+        );
+      }
     });
     setConfirmOpen(false);
   };
 
   const handleDeined = (row) => {
-    console.log("deined");
+    console.log('deined');
     console.log(row);
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Content-Type', 'application/json');
 
     const raw = JSON.stringify({
       denied: 1,
@@ -144,19 +138,19 @@ const PaymentTeam = () => {
     });
 
     const requestOptions = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
       body: raw,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
-    fetch("api/paymentConfirmOrDeined", requestOptions).then((response) => {
+    fetch('api/paymentConfirmOrDeined', requestOptions).then((response) => {
       if (response.ok) {
-        console.log("Payment Denied");
-       setData(
-         (prevData) =>
-           prevData.filter((item) => item.HopeFuelID !== row.HopeFuelID) // Use TransactionID here
-       );
+        console.log('Payment Denied');
+        setData(
+          (prevData) =>
+            prevData.filter((item) => item.HopeFuelID !== row.HopeFuelID), // Use TransactionID here
+        );
       }
     });
     setDeinedOpen(false);
@@ -164,15 +158,16 @@ const PaymentTeam = () => {
 
   React.useEffect(() => {
     const requestOptions = {
-      method: "GET",
-      redirect: "follow",
+      method: 'GET',
+      redirect: 'follow',
     };
 
-    fetch("/api/transactions?paymentCheckStatus=0", requestOptions)
+    fetch('/api/transactions?paymentCheckStatus=0', requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        setData(result)})
+        setData(result);
+      })
       .catch((error) => console.error(error));
   }, []);
 
@@ -206,7 +201,7 @@ const PaymentTeam = () => {
             rows.map((row) => (
               <TableRow
                 key={row.HopeFuelID}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
                   {row.HopeFuelID}
@@ -297,7 +292,7 @@ const PaymentTeam = () => {
             Deny
           </Button>
         </DialogActions>
-      </Dialog> */} 
+      </Dialog> */}
     </TableContainer>
   );
 };

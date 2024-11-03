@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import SearchBar from "../Components/SearchBar";
-import Divider from "@mui/material/Divider";
-import { Container, Typography, CircularProgress } from "@mui/material";
-import ItemList from "../Components/ItemList";
-import { set } from "date-fns";
+import React, { useState, useEffect } from 'react';
+import SearchBar from '../Components/SearchBar';
+import Divider from '@mui/material/Divider';
+import { Container, Typography, CircularProgress } from '@mui/material';
+import ItemList from '../Components/ItemList';
+import { set } from 'date-fns';
 
 export default function SearchBarForm() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false); // Manage loading state
-  const [error, setError] = useState(null); 
-   const [noResults, setNoResults] = useState(false);
+  const [error, setError] = useState(null);
+  const [noResults, setNoResults] = useState(false);
 
   // Function to fetch data from the API
   const handleSearch = async (HopeFuelID) => {
-    setLoading(true); 
-    setError(null); 
-    setNoResults(false); 
+    setLoading(true);
+    setError(null);
+    setNoResults(false);
 
     try {
       const url = HopeFuelID
@@ -29,18 +29,17 @@ export default function SearchBarForm() {
       }
 
       const data = await response.json();
-      console.log("Fetched Data:", data);
-        if (data.length === 0) {
-          setNoResults(true); // Set no-results flag if API returns an empty array
-        } else {
-          setItems(data); // Update items state with fetched data
-        }
-    
+      console.log('Fetched Data:', data);
+      if (data.length === 0) {
+        setNoResults(true); // Set no-results flag if API returns an empty array
+      } else {
+        setItems(data); // Update items state with fetched data
+      }
     } catch (error) {
-      console.error("Search Error:", error);
+      console.error('Search Error:', error);
       setError(error.message);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -53,14 +52,14 @@ export default function SearchBarForm() {
     <Container
       maxWidth="md"
       sx={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        paddingTop: { xs: "8%", md: "5%" },
-        boxSizing: "border-box",
-        textAlign: "center",
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        paddingTop: { xs: '8%', md: '5%' },
+        boxSizing: 'border-box',
+        textAlign: 'center',
       }}
     >
       <Typography variant="h4" gutterBottom>
@@ -72,9 +71,9 @@ export default function SearchBarForm() {
 
       <Divider
         sx={{
-          width: "100%",
+          width: '100%',
           marginTop: 4,
-          borderColor: "rgba(0, 0, 0, 0.12)",
+          borderColor: 'rgba(0, 0, 0, 0.12)',
           marginBottom: 4,
         }}
       />
@@ -88,8 +87,7 @@ export default function SearchBarForm() {
         <Typography variant="body1" color="textSecondary">
           No matching items found. Please try a different search term.
         </Typography>
-      
-      ) :(
+      ) : (
         <ItemList items={items} />
       )}
     </Container>

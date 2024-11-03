@@ -1,3 +1,1 @@
-
-
-export const SUPPORTREGIONCONST = ['region 1', 'region 2', 'region 3' ];
+export const SUPPORTREGIONCONST = ['region 1', 'region 2', 'region 3'];

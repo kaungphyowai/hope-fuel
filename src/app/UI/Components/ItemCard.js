@@ -1,23 +1,16 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  
-  Chip,
-  Box,
-} from "@mui/material";
+import React from 'react';
+import { Card, CardContent, Typography, Chip, Box } from '@mui/material';
 
 function ItemCard({ item }) {
   return (
     <Card
       sx={{
-        display: "flex",
-        alignItems: "center",
-        padding: "8px",
-        boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-        "&:hover": { backgroundColor: "#f0f0f0" },
-        cursor: "pointer",
+        display: 'flex',
+        alignItems: 'center',
+        padding: '8px',
+        boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.2)',
+        '&:hover': { backgroundColor: '#f0f0f0' },
+        cursor: 'pointer',
       }}
     >
       <Box
@@ -27,15 +20,15 @@ function ItemCard({ item }) {
         sx={{
           width: 64,
           height: 64,
-          marginRight: "16px",
-          borderRadius: "8px",
-          objectFit: "cover",
-          backgroundColor: "#c4c4c4",
+          marginRight: '16px',
+          borderRadius: '8px',
+          objectFit: 'cover',
+          backgroundColor: '#c4c4c4',
         }}
       />
       <div
         sx={{
-          display: "block",
+          display: 'block',
         }}
       >
         <CardContent sx={{ flex: 1 }}>
@@ -50,8 +43,8 @@ function ItemCard({ item }) {
           <Chip
             label={item.CurrencyCode}
             sx={{
-              backgroundColor: "#fecaca",
-              color: "black",
+              backgroundColor: '#fecaca',
+              color: 'black',
             }}
           />
         </Box>

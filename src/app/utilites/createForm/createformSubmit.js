@@ -1,20 +1,34 @@
 // Desc: This file contains the function that is used to submit the form data to the database
 
-export default async function createFormSubmit(event, currency, supportRegion ,files, userInfo, setloading, formFillingPerson, setAmountValidate, setmonthValidate, setmanyChatValidate,fileExist, setfileExist,agentId) {
+export default async function createFormSubmit(
+  event,
+  currency,
+  supportRegion,
+  files,
+  userInfo,
+  setloading,
+  formFillingPerson,
+  setAmountValidate,
+  setmonthValidate,
+  setmanyChatValidate,
+  fileExist,
+  setfileExist,
+  agentId,
+) {
   event.preventDefault();
   setAmountValidate(false);
   setmonthValidate(false);
   setmanyChatValidate(false);
-  console.log("from the createFormSubmit", fileExist);
+  console.log('from the createFormSubmit', fileExist);
   // setloading(true)
 
   const data = new FormData(event.currentTarget);
-  const amount = data.get("amount");
-  const month = data.get("month");
-  const manychat = data.get("manyChat");
-  const wallet = JSON.parse(data.get("wallets"));
-  const notes = data.get("notes");
-  const contactLink = data.get("contactLink");
+  const amount = data.get('amount');
+  const month = data.get('month');
+  const manychat = data.get('manyChat');
+  const wallet = JSON.parse(data.get('wallets'));
+  const notes = data.get('notes');
+  const contactLink = data.get('contactLink');
   //validate month and amount
   if (!/^\d+$/g.test(amount)) {
     setAmountValidate(true);
@@ -40,16 +54,15 @@ export default async function createFormSubmit(event, currency, supportRegion ,f
   }
 
   var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  console.log("agentID is " + agentId);
-  console.log("UserInfo", userInfo);
-
+  myHeaders.append('Content-Type', 'application/json');
+  console.log('agentID is ' + agentId);
+  console.log('UserInfo', userInfo);
 
   let raw = JSON.stringify({
     customerName: userInfo.name,
     customerEmail: userInfo.email,
     agentId: agentId,
-    supportRegionId: supportRegion["SupportRegionID"],
+    supportRegionId: supportRegion['SupportRegionID'],
     manyChatId: manychat,
     contactLink: contactLink,
     amount: amount,
@@ -61,20 +74,20 @@ export default async function createFormSubmit(event, currency, supportRegion ,f
     }),
   });
 
-  console.log("RawData is ");
-  console.log(raw)
+  console.log('RawData is ');
+  console.log(raw);
 
   let requestOptions = {
-    method: "POST",
+    method: 'POST',
     headers: myHeaders,
     body: raw,
-    redirect: "follow",
+    redirect: 'follow',
   };
-  let answ = await fetch("/api/submitPayment/", requestOptions);
+  let answ = await fetch('/api/submitPayment/', requestOptions);
 
   let res = await answ.json();
-  console.log("My answer id: " + res);
- location.reload();
+  console.log('My answer id: ' + res);
+  location.reload();
 }
 // var raw = JSON.stringify({
 //   "records": [
@@ -93,7 +106,7 @@ export default async function createFormSubmit(event, currency, supportRegion ,f
 //         "screenshot": files.map((url) => {return {url: url.href}}),
 //         "notion_form_filled_person": formFillingPerson,
 //         "manychat_id": parseInt(manychat)
-        
+
 //       }
 //     }
 //   ]
@@ -110,5 +123,3 @@ export default async function createFormSubmit(event, currency, supportRegion ,f
 
 //  let json = await response.json();
 //  location.reload();
-
-

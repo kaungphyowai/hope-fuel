@@ -1,7 +1,5 @@
-import { NextResponse } from "next/server";
-import db from "../../utilites/db";
-
-
+import { NextResponse } from 'next/server';
+import db from '../../utilites/db';
 
 async function PaymentCheckQuery(status) {
   /* amount, month, screenshot, formfill person
@@ -41,53 +39,45 @@ GROUP BY
     
 
 `;
-  
+
   try {
-    const result = await db(query,[status]);
+    const result = await db(query, [status]);
     // console.log("Result: ", result);
 
     // turn every screenshot url into an array
-    if(Array.isArray(result))
-    {
-      if(result.length > 0)
-      {
-        result.forEach(trans => {
-          if(trans['ScreenShots'] == null)
-          {
-            trans['ScreenShots'] = []
-
+    if (Array.isArray(result)) {
+      if (result.length > 0) {
+        result.forEach((trans) => {
+          if (trans['ScreenShots'] == null) {
+            trans['ScreenShots'] = [];
+          } else {
+            trans['ScreenShots'] = trans['ScreenShots'].split(';');
           }
-          else
-          {
-            trans['ScreenShots'] = trans['ScreenShots'].split(';')
-
-          }
-        })
+        });
       }
     }
     return result;
   } catch (error) {
-    console.error("Error getting Dashboard Data:", error);
+    console.error('Error getting Dashboard Data:', error);
     return NextResponse.json(
-      { error: "Failed to get Dashboard Data" },
-      { status: 500 }
+      { error: 'Failed to get Dashboard Data' },
+      { status: 500 },
     );
   }
 }
 //Get Transactions Dashboard Data
 export async function GET(req) {
   try {
-    
     const url = new URL(req.url);
-    const status = url.searchParams.get("paymentCheckStatus");
+    const status = url.searchParams.get('paymentCheckStatus');
     const data = await PaymentCheckQuery(status);
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error("[Error] Cannot get dashboard data", error);
+    console.error('[Error] Cannot get dashboard data', error);
     return NextResponse.json(
-      { error: "Cannot get dashboard data " },
-      { status: 500 }
+      { error: 'Cannot get dashboard data ' },
+      { status: 500 },
     );
   }
 }

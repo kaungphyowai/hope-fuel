@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import { TextField, InputAdornment } from "@mui/material";
-import { Search as SearchIcon } from "@mui/icons-material";
+import React, { useState } from 'react';
+import { TextField, InputAdornment } from '@mui/material';
+import { Search as SearchIcon } from '@mui/icons-material';
 
 function SearchBar({ onSearch }) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleInputChange = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
 
-   
-      onSearch(value);
-    
+    onSearch(value);
   };
 
   return (
@@ -29,10 +27,10 @@ function SearchBar({ onSearch }) {
         ),
       }}
       sx={{
-        backgroundColor: "white",
-        borderRadius: "30px",
-        marginBottom: "16px",
-        boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+        backgroundColor: 'white',
+        borderRadius: '30px',
+        marginBottom: '16px',
+        boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
       }}
     />
   );

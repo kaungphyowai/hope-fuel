@@ -1,17 +1,30 @@
-import { Alert, AlertTitle, Autocomplete, Box, Button, CircularProgress, FormControlLabel, FormLabel, ImageList, ImageListItem, Radio, RadioGroup, Stack, TextField } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import extendUserSubmit from '../../utilites/ExtendUser/extendUserSubmit'
+import {
+  Alert,
+  AlertTitle,
+  Autocomplete,
+  Box,
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  FormLabel,
+  ImageList,
+  ImageListItem,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField,
+} from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import extendUserSubmit from '../../utilites/ExtendUser/extendUserSubmit';
 import { styled } from '@mui/material/styles';
 import { UserContext, AgentContext } from '../../HomePage';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import filehandler from '../../utilites/createForm/fileHandler';
-import checkPrfSubmit from '../../utilites/ExtendUser/checkPrfSubmit'
-import {SUPPORTREGIONCONST} from '../../variables/const'
+import checkPrfSubmit from '../../utilites/ExtendUser/checkPrfSubmit';
+import { SUPPORTREGIONCONST } from '../../variables/const';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import { ExtendOrNot } from '../ExtendOrNot';
-import Dropzone from 'react-dropzone'
-
-
+import Dropzone from 'react-dropzone';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -25,14 +38,14 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-const ExtendUserForm = ({userRole}) => {
+const ExtendUserForm = ({ userRole }) => {
   const [loading, setloading] = useState(false);
   //LOAD THE WALLETS
   const [wallets, setwallets] = useState();
   const [currency, setcurrency] = useState();
-  const [currencies, setCurrencies] = useState([])
-  const [supportRegion, setsupportRegion] = useState("choose your region");
-    const [supportRegions, setsupportRegions] = useState([]);
+  const [currencies, setCurrencies] = useState([]);
+  const [supportRegion, setsupportRegion] = useState('choose your region');
+  const [supportRegions, setsupportRegions] = useState([]);
   const [userInfo, setUserInfo] = useState({});
   const [files, setfiles] = useState([]);
 
@@ -47,7 +60,7 @@ const ExtendUserForm = ({userRole}) => {
   const [hasContinue, sethasContinue] = useState(false);
   const [hasPermissonThisMonth, setHasPermissonThisMonth] = useState(true);
   const [fileExist, setfileExist] = useState(true);
-  const [uploadProgress, setUploadProgress] = useState("");
+  const [uploadProgress, setUploadProgress] = useState('');
 
   //Load the Wallet on Component Mount
   useEffect(() => {
@@ -57,46 +70,45 @@ const ExtendUserForm = ({userRole}) => {
           return response.json(); // Ensure response.json() is returned
         })
         .then((data) => {
-          console.log("loadWalletByCurrencyResponse:", data);
+          console.log('loadWalletByCurrencyResponse:', data);
           setwallets(data);
         })
         .catch((error) => {
-          console.error("Error fetching wallets by currency code:", error);
+          console.error('Error fetching wallets by currency code:', error);
         });
     }
   }, [currency]);
 
-//LoadSupportRegion
-    useEffect(() => {
-      fetch("/api/loadSupportRegion")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("loadSupportRegionResponse:", data);
-          setsupportRegions(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching support regions:", error);
-        });
-    }, []);
+  //LoadSupportRegion
+  useEffect(() => {
+    fetch('/api/loadSupportRegion')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('loadSupportRegionResponse:', data);
+        setsupportRegions(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching support regions:', error);
+      });
+  }, []);
 
-    // load currencies when component mount
-    useEffect(() => {
-      fetch("/api/getCurrencies")
+  // load currencies when component mount
+  useEffect(() => {
+    fetch('/api/getCurrencies')
       .then((response) => response.json())
       .then((data) => {
         setCurrencies(data);
-      })
-    }, [])
-
+      });
+  }, []);
 
   const formFillingPerson = useContext(UserContext).username;
-  const [otp, setOtp] = React.useState("");
+  const [otp, setOtp] = React.useState('');
 
   const handleChange = (newValue) => {
     setOtp(newValue);
   };
 
-let agentId = useContext(AgentContext).id;;
+  let agentId = useContext(AgentContext).id;
 
   return (
     <>
@@ -115,7 +127,7 @@ let agentId = useContext(AgentContext).id;;
             setisChecking,
             setUserInfo,
             setHasPermissonThisMonth,
-            userRole
+            userRole,
           );
         }}
         TextFieldsProps={{ disabled: checkInputComplete }}
@@ -131,13 +143,13 @@ let agentId = useContext(AgentContext).id;;
           <Stack
             spacing={2}
             direction="row"
-            justifyContent={"flex-end"}
+            justifyContent={'flex-end'}
             sx={{ mt: 3, mb: 2 }}
           >
             <Button
               variant="contained"
               onClick={() => {
-                setOtp("");
+                setOtp('');
                 setcheckInputComplete(false);
               }}
             >
@@ -157,12 +169,12 @@ let agentId = useContext(AgentContext).id;;
       )}
 
       {isChecking && (
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: 'flex' }}>
           <CircularProgress />
         </Box>
       )}
       {loading && (
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: 'flex' }}>
           <CircularProgress />
         </Box>
       )}
@@ -171,7 +183,7 @@ let agentId = useContext(AgentContext).id;;
         !isChecking &&
         checkInputComplete &&
         !hasPermissonThisMonth &&
-        userRole != "admin" && (
+        userRole != 'admin' && (
           <h1>
             ယခုလအတွင်း ဖော်ပြပါထောက်ပို့တပ်သားအတွက် စာရင်းသွင်းထားပြီးပါပြီ။
             ထူးခြားဖြစ်စဥ် ဖြစ်ပါက Admin ကိုဆက်သွယ်ပါ
@@ -182,7 +194,7 @@ let agentId = useContext(AgentContext).id;;
         !isChecking &&
         checkInputComplete &&
         !hasPermissonThisMonth &&
-        userRole == "admin" && (
+        userRole == 'admin' && (
           <>
             <h1>
               ဒီ user က ဒီလအတွက် သွင်းပြီးသွားပါပြီ။ Admin
@@ -204,8 +216,7 @@ let agentId = useContext(AgentContext).id;;
         <Box
           component="form"
           onSubmit={(event) =>
-           
-            console.log("submitting ", event)||
+            console.log('submitting ', event) ||
             extendUserSubmit(
               event,
               userInfo,
@@ -220,7 +231,7 @@ let agentId = useContext(AgentContext).id;;
               fileExist,
               setfileExist,
               wallets,
-              agentId
+              agentId,
             )
           }
           sx={{ mt: 1 }}
@@ -234,7 +245,7 @@ let agentId = useContext(AgentContext).id;;
             label="Amount"
             type="text"
             id="amount"
-            helperText={amountValidate && "ဂဏန်းဘဲသွင်းပါ"}
+            helperText={amountValidate && 'ဂဏန်းဘဲသွင်းပါ'}
             error={amountValidate}
             InputProps={{
               inputProps: { min: 0 },
@@ -247,7 +258,7 @@ let agentId = useContext(AgentContext).id;;
             id="month"
             label="Month"
             name="month"
-            helperText={monthValidate && "ဂဏန်းဘဲသွင်းပါ"}
+            helperText={monthValidate && 'ဂဏန်းဘဲသွင်းပါ'}
             error={monthValidate}
             type="text"
             InputProps={{
@@ -303,8 +314,8 @@ let agentId = useContext(AgentContext).id;;
             options={supportRegions}
             sx={{ width: 300, marginTop: 2 }}
             value={supportRegion}
-            defaultValue={() => setsupportRegion("choose a region")}
-            getOptionLabel={(option) => option.Region || ""}
+            defaultValue={() => setsupportRegion('choose a region')}
+            getOptionLabel={(option) => option.Region || ''}
             renderInput={(params) => (
               <TextField {...params} label="Support Region" required />
             )}
@@ -318,7 +329,7 @@ let agentId = useContext(AgentContext).id;;
             name="manychat"
             type="text"
             error={manyChatValidate}
-            helperText={manyChatValidate && "ဂဏန်းဘဲသွင်းပါ"}
+            helperText={manyChatValidate && 'ဂဏန်းဘဲသွင်းပါ'}
           />
 
           <TextField
@@ -340,16 +351,16 @@ let agentId = useContext(AgentContext).id;;
 
           <div
             style={{
-              width: "100%",
-              width: "100%",
-              height: "50%",
-              border: "1px solid black",
+              width: '100%',
+              width: '100%',
+              height: '50%',
+              border: '1px solid black',
             }}
             onDrop={(e) => {
               e.preventDefault();
               e.nativeEvent.dataTransfer.items[0].getAsString(function (url) {
                 if (url == null) {
-                  console.log("this run");
+                  console.log('this run');
                   console.log(url);
                   return;
                 }
@@ -364,15 +375,15 @@ let agentId = useContext(AgentContext).id;;
               onDrop={(acceptedFiles) =>
                 filehandler(acceptedFiles, setfiles, files, setUploadProgress)
               }
-              accept={["text/*, img/*"]}
+              accept={['text/*, img/*']}
             >
               {({ getRootProps, getInputProps }) => (
                 <section>
-                  <div {...getRootProps()} style={{ padding: "20% 20%" }}>
+                  <div {...getRootProps()} style={{ padding: '20% 20%' }}>
                     <input {...getInputProps()} />
                     <p>
                       {uploadProgress ||
-                        "Drag & drop some files here, or click to select files"}
+                        'Drag & drop some files here, or click to select files'}
                     </p>
                   </div>
                 </section>
@@ -380,7 +391,7 @@ let agentId = useContext(AgentContext).id;;
             </Dropzone>
           </div>
           {!fileExist && (
-            <p style={{ color: "red" }}>You need to have a file</p>
+            <p style={{ color: 'red' }}>You need to have a file</p>
           )}
           {files.length != 0 && (
             <ImageList
@@ -390,7 +401,7 @@ let agentId = useContext(AgentContext).id;;
             >
               {files.map((item) => (
                 <ImageListItem key={item.href}>
-                  <img src={`${item.href}`} alt={"hello"} loading="lazy" />
+                  <img src={`${item.href}`} alt={'hello'} loading="lazy" />
                 </ImageListItem>
               ))}
             </ImageList>
@@ -408,6 +419,6 @@ let agentId = useContext(AgentContext).id;;
       )}
     </>
   );
-}
+};
 
-export default ExtendUserForm
+export default ExtendUserForm;

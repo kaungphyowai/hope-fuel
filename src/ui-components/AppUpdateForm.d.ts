@@ -4,37 +4,42 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
-import * as React from "react";
-import { GridProps, SwitchFieldProps } from "@aws-amplify/ui-react";
+import * as React from 'react';
+import { GridProps, SwitchFieldProps } from '@aws-amplify/ui-react';
 export declare type EscapeHatchProps = {
-    [elementHierarchy: string]: Record<string, unknown>;
+  [elementHierarchy: string]: Record<string, unknown>;
 } | null;
 export declare type VariantValues = {
-    [key: string]: string;
+  [key: string]: string;
 };
 export declare type Variant = {
-    variantValues: VariantValues;
-    overrides: EscapeHatchProps;
+  variantValues: VariantValues;
+  overrides: EscapeHatchProps;
 };
 export declare type ValidationResponse = {
-    hasError: boolean;
-    errorMessage?: string;
+  hasError: boolean;
+  errorMessage?: string;
 };
-export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
+export declare type ValidationFunction<T> = (
+  value: T,
+  validationResponse: ValidationResponse,
+) => ValidationResponse | Promise<ValidationResponse>;
 export declare type AppUpdateFormInputValues = {
-    status?: boolean;
+  status?: boolean;
 };
 export declare type AppUpdateFormValidationValues = {
-    status?: ValidationFunction<boolean>;
+  status?: ValidationFunction<boolean>;
 };
-export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type PrimitiveOverrideProps<T> = Partial<T> &
+  React.DOMAttributes<HTMLDivElement>;
 export declare type AppUpdateFormOverridesProps = {
-    AppUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    status?: PrimitiveOverrideProps<SwitchFieldProps>;
+  AppUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
+  status?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
-export declare type AppUpdateFormProps = React.PropsWithChildren<{
+export declare type AppUpdateFormProps = React.PropsWithChildren<
+  {
     overrides?: AppUpdateFormOverridesProps | undefined | null;
-} & {
+  } & {
     id?: string;
     app?: any;
     onSubmit?: (fields: AppUpdateFormInputValues) => AppUpdateFormInputValues;
@@ -42,5 +47,8 @@ export declare type AppUpdateFormProps = React.PropsWithChildren<{
     onError?: (fields: AppUpdateFormInputValues, errorMessage: string) => void;
     onChange?: (fields: AppUpdateFormInputValues) => AppUpdateFormInputValues;
     onValidate?: AppUpdateFormValidationValues;
-} & React.CSSProperties>;
-export default function AppUpdateForm(props: AppUpdateFormProps): React.ReactElement;
+  } & React.CSSProperties
+>;
+export default function AppUpdateForm(
+  props: AppUpdateFormProps,
+): React.ReactElement;

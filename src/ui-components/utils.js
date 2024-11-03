@@ -5,23 +5,23 @@
  **************************************************************************/
 
 /* eslint-disable */
-import * as React from "react";
-import { fetchUserAttributes, signOut } from "aws-amplify/auth";
-import { DataStore } from "aws-amplify/datastore";
-import { Hub } from "aws-amplify/utils";
-export const UI_CHANNEL = "ui";
-export const UI_EVENT_TYPE_ACTIONS = "actions";
-export const CATEGORY_AUTH = "auth";
-export const CATEGORY_DATASTORE = "datastore";
-export const CATEGORY_CORE = "core";
-export const ACTION_AUTH_SIGNOUT = "signout";
-export const ACTION_NAVIGATE = "navigate";
-export const ACTION_DATASTORE_CREATE = "create";
-export const ACTION_DATASTORE_DELETE = "delete";
-export const ACTION_DATASTORE_UPDATE = "update";
-export const ACTION_STATE_MUTATION = "statemutation";
-export const STATUS_STARTED = "started";
-export const STATUS_FINISHED = "finished";
+import * as React from 'react';
+import { fetchUserAttributes, signOut } from 'aws-amplify/auth';
+import { DataStore } from 'aws-amplify/datastore';
+import { Hub } from 'aws-amplify/utils';
+export const UI_CHANNEL = 'ui';
+export const UI_EVENT_TYPE_ACTIONS = 'actions';
+export const CATEGORY_AUTH = 'auth';
+export const CATEGORY_DATASTORE = 'datastore';
+export const CATEGORY_CORE = 'core';
+export const ACTION_AUTH_SIGNOUT = 'signout';
+export const ACTION_NAVIGATE = 'navigate';
+export const ACTION_DATASTORE_CREATE = 'create';
+export const ACTION_DATASTORE_DELETE = 'delete';
+export const ACTION_DATASTORE_UPDATE = 'update';
+export const ACTION_STATE_MUTATION = 'statemutation';
+export const STATUS_STARTED = 'started';
+export const STATUS_FINISHED = 'finished';
 export const EVENT_ACTION_AUTH = `${UI_EVENT_TYPE_ACTIONS}:${CATEGORY_AUTH}`;
 export const EVENT_ACTION_AUTH_SIGNOUT = `${EVENT_ACTION_AUTH}:${ACTION_AUTH_SIGNOUT}`;
 export const ACTION_AUTH_SIGNOUT_STARTED = `${EVENT_ACTION_AUTH_SIGNOUT}:${STATUS_STARTED}`;
@@ -44,11 +44,11 @@ export const EVENT_ACTION_DATASTORE_UPDATE = `${EVENT_ACTION_DATASTORE}:${ACTION
 export const ACTION_DATASTORE_UPDATE_STARTED = `${EVENT_ACTION_DATASTORE_UPDATE}:${STATUS_STARTED}`;
 export const ACTION_DATASTORE_UPDATE_FINISHED = `${EVENT_ACTION_DATASTORE_UPDATE}:${STATUS_FINISHED}`;
 export const DATASTORE_QUERY_BY_ID_ERROR =
-  "Error querying datastore item by id";
+  'Error querying datastore item by id';
 export const AMPLIFY_SYMBOL =
-  typeof Symbol !== "undefined" && typeof Symbol.for === "function"
-    ? Symbol.for("amplify_default")
-    : "@@amplify_default";
+  typeof Symbol !== 'undefined' && typeof Symbol.for === 'function'
+    ? Symbol.for('amplify_default')
+    : '@@amplify_default';
 export const useStateMutationAction = (initialState) => {
   const [state, setState] = React.useState(initialState);
   const setNewState = React.useCallback(
@@ -61,7 +61,7 @@ export const useStateMutationAction = (initialState) => {
           data: { prevState, newState },
         },
         EVENT_ACTION_CORE_STATE_MUTATION,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
       setState(newState);
       Hub.dispatch(
@@ -71,10 +71,10 @@ export const useStateMutationAction = (initialState) => {
           data: { prevState, newState },
         },
         EVENT_ACTION_CORE_STATE_MUTATION,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
     },
-    [state]
+    [state],
   );
   return [state, setNewState];
 };
@@ -82,15 +82,15 @@ export const useNavigateAction = (options) => {
   const { type, url, anchor, target } = options;
   const run = React.useMemo(() => {
     switch (type) {
-      case "url":
+      case 'url':
         return () => {
-          window.open(url, target || "_self", "noopener noreferrer");
+          window.open(url, target || '_self', 'noopener noreferrer');
         };
-      case "anchor":
+      case 'anchor':
         return () => {
-          window.location.hash = anchor ?? "";
+          window.location.hash = anchor ?? '';
         };
-      case "reload":
+      case 'reload':
         return () => {
           window.location.reload();
         };
@@ -98,7 +98,7 @@ export const useNavigateAction = (options) => {
         return () => {
           // eslint-disable-next-line no-console
           console.warn(
-            'Please provide a valid navigate type. Available types are "url", "anchor" and "reload".'
+            'Please provide a valid navigate type. Available types are "url", "anchor" and "reload".',
           );
         };
     }
@@ -111,7 +111,7 @@ export const useNavigateAction = (options) => {
         data: options,
       },
       EVENT_ACTION_CORE_NAVIGATE,
-      AMPLIFY_SYMBOL
+      AMPLIFY_SYMBOL,
     );
     run();
     Hub.dispatch(
@@ -121,7 +121,7 @@ export const useNavigateAction = (options) => {
         data: options,
       },
       EVENT_ACTION_CORE_NAVIGATE,
-      AMPLIFY_SYMBOL
+      AMPLIFY_SYMBOL,
     );
   };
   return navigateAction;
@@ -131,13 +131,13 @@ export const findChildOverrides = (overrides, elementHierarchy) => {
     return null;
   }
   const filteredOverrides = Object.entries(overrides).filter((m) =>
-    m[0].startsWith(elementHierarchy)
+    m[0].startsWith(elementHierarchy),
   );
   return Object.assign(
     {},
     ...Array.from(filteredOverrides, ([k, v]) => ({
-      [k.replace(elementHierarchy, "")]: v,
-    }))
+      [k.replace(elementHierarchy, '')]: v,
+    })),
   );
 };
 export const getOverrideProps = (overrides, elementHierarchy) => {
@@ -153,7 +153,7 @@ export const getOverrideProps = (overrides, elementHierarchy) => {
 export function getOverridesFromVariants(variants, props) {
   const variantValueKeys = [
     ...new Set(
-      variants.flatMap((variant) => Object.keys(variant.variantValues))
+      variants.flatMap((variant) => Object.keys(variant.variantValues)),
     ),
   ];
   const variantValuesFromProps = Object.keys(props)
@@ -169,7 +169,7 @@ export function getOverridesFromVariants(variants, props) {
       Object.keys(variantValues).length ===
         Object.keys(variantValuesFromProps).length &&
       Object.entries(variantValues).every(
-        ([key, value]) => variantValuesFromProps[key] === value
+        ([key, value]) => variantValuesFromProps[key] === value,
       )
     );
   });
@@ -189,13 +189,13 @@ export const mergeVariantsAndOverrides = (variants, overrides) => {
   }
   const overrideKeys = new Set(Object.keys(overrides));
   const sharedKeys = Object.keys(variants).filter((variantKey) =>
-    overrideKeys.has(variantKey)
+    overrideKeys.has(variantKey),
   );
   const merged = Object.fromEntries(
     sharedKeys.map((sharedKey) => [
       sharedKey,
       { ...variants[sharedKey], ...overrides[sharedKey] },
-    ])
+    ]),
   );
   return {
     ...variants,
@@ -205,10 +205,10 @@ export const mergeVariantsAndOverrides = (variants, overrides) => {
 };
 export const isErrorWithMessage = (error) => {
   return (
-    typeof error === "object" &&
+    typeof error === 'object' &&
     error !== null &&
-    "message" in error &&
-    typeof error.message === "string"
+    'message' in error &&
+    typeof error.message === 'string'
   );
 };
 export const toErrorWithMessage = (maybeError) => {
@@ -231,21 +231,21 @@ export const useTypeCastFields = ({ fields, modelName, schema }) => {
     Object.keys(fields).forEach((fieldName) => {
       const field = fields[fieldName];
       switch (schema?.models[modelName]?.fields?.[fieldName]?.type) {
-        case "AWSTimestamp":
+        case 'AWSTimestamp':
           castFields[fieldName] = Number(field);
           break;
-        case "Boolean":
+        case 'Boolean':
           castFields[fieldName] = Boolean(field);
           break;
-        case "Int":
+        case 'Int':
           castFields[fieldName] =
-            typeof field === "string" ||
-            (typeof field === "object" &&
-              Object.prototype.toString.call(field) === "[object String]")
+            typeof field === 'string' ||
+            (typeof field === 'object' &&
+              Object.prototype.toString.call(field) === '[object String]')
               ? parseInt(field)
               : field;
           break;
-        case "Float":
+        case 'Float':
           castFields[fieldName] = Number(field);
           break;
         default:
@@ -275,7 +275,7 @@ export const useDataStoreCreateAction = ({
           data: { fields },
         },
         EVENT_ACTION_DATASTORE_CREATE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
       const item = await DataStore.save(new model(fields));
       Hub.dispatch(
@@ -285,7 +285,7 @@ export const useDataStoreCreateAction = ({
           data: { fields, item },
         },
         EVENT_ACTION_DATASTORE_CREATE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
     } catch (error) {
       Hub.dispatch(
@@ -298,7 +298,7 @@ export const useDataStoreCreateAction = ({
           },
         },
         EVENT_ACTION_DATASTORE_CREATE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
     }
   };
@@ -323,7 +323,7 @@ export const useDataStoreUpdateAction = ({
           data: { fields, id },
         },
         EVENT_ACTION_DATASTORE_UPDATE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
       const original = await DataStore.query(model, id);
       if (!original) {
@@ -332,7 +332,7 @@ export const useDataStoreUpdateAction = ({
       const item = await DataStore.save(
         model.copyOf(original, (updated) => {
           Object.assign(updated, fields);
-        })
+        }),
       );
       Hub.dispatch(
         UI_CHANNEL,
@@ -341,7 +341,7 @@ export const useDataStoreUpdateAction = ({
           data: { fields, id, item },
         },
         EVENT_ACTION_DATASTORE_UPDATE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
     } catch (error) {
       Hub.dispatch(
@@ -355,7 +355,7 @@ export const useDataStoreUpdateAction = ({
           },
         },
         EVENT_ACTION_DATASTORE_UPDATE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
     }
   };
@@ -371,7 +371,7 @@ export const useDataStoreDeleteAction =
           data: { id },
         },
         EVENT_ACTION_DATASTORE_DELETE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
       await DataStore.delete(model, id);
       Hub.dispatch(
@@ -381,7 +381,7 @@ export const useDataStoreDeleteAction =
           data: { id },
         },
         EVENT_ACTION_DATASTORE_DELETE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
     } catch (error) {
       Hub.dispatch(
@@ -391,7 +391,7 @@ export const useDataStoreDeleteAction =
           data: { id, errorMessage: getErrorMessage(error) },
         },
         EVENT_ACTION_DATASTORE_DELETE,
-        AMPLIFY_SYMBOL
+        AMPLIFY_SYMBOL,
       );
     }
   };
@@ -405,14 +405,14 @@ export const createDataStorePredicate = (predicateObject) => {
   } = predicateObject;
   if (Array.isArray(groupAnd)) {
     const predicates = groupAnd.map((condition) =>
-      createDataStorePredicate(condition)
+      createDataStorePredicate(condition),
     );
     return (p) =>
       p.and((model) => predicates.map((predicate) => predicate(model)));
   }
   if (Array.isArray(groupOr)) {
     const predicates = groupOr.map((condition) =>
-      createDataStorePredicate(condition)
+      createDataStorePredicate(condition),
     );
     return (p) =>
       p.or((model) => predicates.map((predicate) => predicate(model)));
@@ -435,10 +435,10 @@ export const useDataStoreCollection = ({ model, criteria, pagination }) => {
     const subscription = DataStore.observeQuery(
       model,
       criteria,
-      pagination
+      pagination,
     ).subscribe(
       (snapshot) => setResult({ items: snapshot.items, isLoading: false }),
-      (error) => setResult({ items: [], error, isLoading: false })
+      (error) => setResult({ items: [], error, isLoading: false }),
     );
     if (subscription) {
       return () => subscription.unsubscribe();
@@ -466,7 +466,7 @@ export const useDataStoreItem = ({ model, id }) => {
   };
 };
 export function useDataStoreBinding(props) {
-  return props.type === "record"
+  return props.type === 'record'
     ? useDataStoreItem(props)
     : useDataStoreCollection(props);
 }
@@ -479,7 +479,7 @@ export const useAuthSignOutAction = (options) => async () => {
         data: { options },
       },
       EVENT_ACTION_AUTH_SIGNOUT,
-      AMPLIFY_SYMBOL
+      AMPLIFY_SYMBOL,
     );
     await signOut(options);
     Hub.dispatch(
@@ -489,7 +489,7 @@ export const useAuthSignOutAction = (options) => async () => {
         data: { options },
       },
       EVENT_ACTION_AUTH_SIGNOUT,
-      AMPLIFY_SYMBOL
+      AMPLIFY_SYMBOL,
     );
   } catch (error) {
     Hub.dispatch(
@@ -499,7 +499,7 @@ export const useAuthSignOutAction = (options) => async () => {
         data: { options, errorMessage: getErrorMessage(error) },
       },
       EVENT_ACTION_AUTH_SIGNOUT,
-      AMPLIFY_SYMBOL
+      AMPLIFY_SYMBOL,
     );
   }
 };
@@ -521,23 +521,23 @@ export const useAuth = () => {
   const handleAuth = React.useCallback(
     ({ payload }) => {
       switch (payload.event) {
-        case "signedIn":
-        case "signUp":
-        case "tokenRefresh":
-        case "autoSignIn": {
+        case 'signedIn':
+        case 'signUp':
+        case 'tokenRefresh':
+        case 'autoSignIn': {
           fetchCurrentUserAttributes();
           break;
         }
-        case "signedOut": {
+        case 'signedOut': {
           setResult({ user: undefined, isLoading: false });
           break;
         }
-        case "tokenRefresh_failure":
-        case "signIn_failure": {
+        case 'tokenRefresh_failure':
+        case 'signIn_failure': {
           setResult({ error: payload.data, isLoading: false });
           break;
         }
-        case "autoSignIn_failure": {
+        case 'autoSignIn_failure': {
           setResult({ error: new Error(payload.message), isLoading: false });
           break;
         }
@@ -546,10 +546,10 @@ export const useAuth = () => {
         }
       }
     },
-    [fetchCurrentUserAttributes]
+    [fetchCurrentUserAttributes],
   );
   React.useEffect(() => {
-    const unsubscribe = Hub.listen("auth", handleAuth, "useAuth");
+    const unsubscribe = Hub.listen('auth', handleAuth, 'useAuth');
     fetchCurrentUserAttributes();
     return unsubscribe;
   }, [handleAuth, fetchCurrentUserAttributes]);
@@ -559,11 +559,11 @@ export const useAuth = () => {
 };
 export const validateField = (value, validations) => {
   for (const validation of validations) {
-    if (value === undefined || value === "" || value === null) {
-      if (validation.type === "Required") {
+    if (value === undefined || value === '' || value === null) {
+      if (validation.type === 'Required') {
         return {
           hasError: true,
-          errorMessage: validation.validationMessage || "The value is required",
+          errorMessage: validation.validationMessage || 'The value is required',
         };
       } else {
         return {
@@ -586,74 +586,74 @@ export const parseDateValidator = (dateValidator) => {
 const checkValidation = (value, validation) => {
   if (validation.numValues?.length) {
     switch (validation.type) {
-      case "LessThanChar":
+      case 'LessThanChar':
         return {
           hasError: !(value.length <= validation.numValues[0]),
           errorMessage:
             validation.validationMessage ||
             `The value must be shorter than ${validation.numValues[0]} characters`,
         };
-      case "GreaterThanChar":
+      case 'GreaterThanChar':
         return {
           hasError: !(value.length > validation.numValues[0]),
           errorMessage:
             validation.validationMessage ||
             `The value must be longer than ${validation.numValues[0]} characters`,
         };
-      case "LessThanNum":
+      case 'LessThanNum':
         return {
           hasError: !(value < validation.numValues[0]),
           errorMessage:
             validation.validationMessage ||
             `The value must be less than ${validation.numValues[0]}`,
         };
-      case "GreaterThanNum":
+      case 'GreaterThanNum':
         return {
           hasError: !(value > validation.numValues[0]),
           errorMessage:
             validation.validationMessage ||
             `The value must be greater than ${validation.numValues[0]}`,
         };
-      case "EqualTo":
+      case 'EqualTo':
         return {
           hasError: !validation.numValues.some((el) => el === value),
           errorMessage:
             validation.validationMessage ||
-            `The value must be equal to ${validation.numValues.join(" or ")}`,
+            `The value must be equal to ${validation.numValues.join(' or ')}`,
         };
       default:
     }
   } else if (validation.strValues?.length) {
     switch (validation.type) {
-      case "StartWith":
+      case 'StartWith':
         return {
           hasError: !validation.strValues.some((el) => value.startsWith(el)),
           errorMessage:
             validation.validationMessage ||
-            `The value must start with ${validation.strValues.join(", ")}`,
+            `The value must start with ${validation.strValues.join(', ')}`,
         };
-      case "EndWith":
+      case 'EndWith':
         return {
           hasError: !validation.strValues.some((el) => value.endsWith(el)),
           errorMessage:
             validation.validationMessage ||
-            `The value must end with ${validation.strValues.join(", ")}`,
+            `The value must end with ${validation.strValues.join(', ')}`,
         };
-      case "Contains":
+      case 'Contains':
         return {
           hasError: !validation.strValues.some((el) => value.includes(el)),
           errorMessage:
             validation.validationMessage ||
-            `The value must contain ${validation.strValues.join(", ")}`,
+            `The value must contain ${validation.strValues.join(', ')}`,
         };
-      case "NotContains":
+      case 'NotContains':
         return {
           hasError: !validation.strValues.every((el) => !value.includes(el)),
           errorMessage:
             validation.validationMessage ||
-            `The value must not contain ${validation.strValues.join(", ")}`,
+            `The value must not contain ${validation.strValues.join(', ')}`,
         };
-      case "BeAfter":
+      case 'BeAfter':
         return {
           hasError: !(
             new Date(value) >
@@ -663,7 +663,7 @@ const checkValidation = (value, validation) => {
             validation.validationMessage ||
             `The value must be after ${validation.strValues[0]}`,
         };
-      case "BeBefore":
+      case 'BeBefore':
         return {
           hasError: !(
             new Date(value) <
@@ -676,16 +676,16 @@ const checkValidation = (value, validation) => {
     }
   }
   switch (validation.type) {
-    case "Email":
+    case 'Email':
       const EMAIL_ADDRESS_REGEX =
         /^[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~](.?[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*.?[a-zA-Z0-9])*.[a-zA-Z](-?[a-zA-Z0-9])+$/;
       return {
         hasError: !EMAIL_ADDRESS_REGEX.test(value),
         errorMessage:
           validation.validationMessage ||
-          "The value must be a valid email address",
+          'The value must be a valid email address',
       };
-    case "JSON":
+    case 'JSON':
       let isInvalidJSON = false;
       try {
         JSON.parse(value);
@@ -696,9 +696,9 @@ const checkValidation = (value, validation) => {
         hasError: isInvalidJSON,
         errorMessage:
           validation.validationMessage ||
-          "The value must be in a correct JSON format",
+          'The value must be in a correct JSON format',
       };
-    case "IpAddress":
+    case 'IpAddress':
       const IPV_4 =
         /^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/;
       const IPV_6 =
@@ -707,9 +707,9 @@ const checkValidation = (value, validation) => {
         hasError: !(IPV_4.test(value) || IPV_6.test(value)),
         errorMessage:
           validation.validationMessage ||
-          "The value must be an IPv4 or IPv6 address",
+          'The value must be an IPv4 or IPv6 address',
       };
-    case "URL":
+    case 'URL':
       let isInvalidUrl = false;
       try {
         new URL(value);
@@ -720,34 +720,34 @@ const checkValidation = (value, validation) => {
         hasError: isInvalidUrl,
         errorMessage:
           validation.validationMessage ||
-          "The value must be a valid URL that begins with a schema (i.e. http:// or mailto:)",
+          'The value must be a valid URL that begins with a schema (i.e. http:// or mailto:)',
       };
-    case "Phone":
+    case 'Phone':
       const PHONE = /^\+?\d[\d\s-]+$/;
       return {
         hasError: !PHONE.test(value),
         errorMessage:
           validation.validationMessage ||
-          "The value must be a valid phone number",
+          'The value must be a valid phone number',
       };
     default:
   }
 };
 const monthToShortMon = {
-  "1": "Jan",
-  "2": "Feb",
-  "3": "Mar",
-  "4": "Apr",
-  "5": "May",
-  "6": "Jun",
-  "7": "Jul",
-  "8": "Aug",
-  "9": "Sep",
-  "10": "Oct",
-  "11": "Nov",
-  "12": "Dec",
+  1: 'Jan',
+  2: 'Feb',
+  3: 'Mar',
+  4: 'Apr',
+  5: 'May',
+  6: 'Jun',
+  7: 'Jul',
+  8: 'Aug',
+  9: 'Sep',
+  10: 'Oct',
+  11: 'Nov',
+  12: 'Dec',
 };
-const invalidDateStr = "Invalid Date";
+const invalidDateStr = 'Invalid Date';
 export function formatDate(date, dateFormat) {
   if (date === undefined || date === null) {
     return date;
@@ -760,17 +760,17 @@ export function formatDate(date, dateFormat) {
   const year = splitDate[0];
   const month = splitDate[1];
   const day = splitDate[2];
-  const truncatedMonth = month.replace(/^0+/, "");
+  const truncatedMonth = month.replace(/^0+/, '');
   switch (dateFormat) {
-    case "locale":
+    case 'locale':
       return validDate.toLocaleDateString();
-    case "YYYY.MM.DD":
+    case 'YYYY.MM.DD':
       return `${year}.${month}.${day}`;
-    case "DD.MM.YYYY":
+    case 'DD.MM.YYYY':
       return `${day}.${month}.${year}`;
-    case "MM/DD/YYYY":
+    case 'MM/DD/YYYY':
       return `${month}/${day}/${year}`;
-    case "Mmm DD, YYYY":
+    case 'Mmm DD, YYYY':
       return `${monthToShortMon[truncatedMonth]} ${day}, ${year}`;
     default:
       return date;
@@ -787,21 +787,21 @@ export function formatTime(time, timeFormat) {
   const validTime = new Date();
   validTime.setHours(Number.parseInt(splitTime[0], 10));
   validTime.setMinutes(Number.parseInt(splitTime[1], 10));
-  const splitSeconds = splitTime[2].split(".");
+  const splitSeconds = splitTime[2].split('.');
   validTime.setSeconds(
     Number.parseInt(splitSeconds[0], 10),
-    Number.parseInt(splitSeconds[1], 10)
+    Number.parseInt(splitSeconds[1], 10),
   );
   if (validTime.toString() === invalidDateStr) {
     return time;
   }
   switch (timeFormat) {
-    case "locale":
+    case 'locale':
       return validTime.toLocaleTimeString();
-    case "hours24":
-      return validTime.toLocaleTimeString("en-gb");
-    case "hours12":
-      return validTime.toLocaleTimeString("en-us");
+    case 'hours24':
+      return validTime.toLocaleTimeString('en-gb');
+    case 'hours12':
+      return validTime.toLocaleTimeString('en-us');
     default:
       return time;
   }
@@ -816,48 +816,48 @@ export function formatDateTime(dateTimeStr, dateTimeFormat) {
   if (dateTime.toString() === invalidDateStr) {
     return dateTimeStr;
   }
-  if (dateTimeFormat === "locale") {
+  if (dateTimeFormat === 'locale') {
     return dateTime.toLocaleString();
   }
-  const dateAndTime = dateTime.toISOString().split("T");
+  const dateAndTime = dateTime.toISOString().split('T');
   const date = formatDate(dateAndTime[0], dateTimeFormat.dateFormat);
   const time = formatTime(dateAndTime[1], dateTimeFormat.timeFormat);
   return `${date} - ${time}`;
 }
 export function formatter(value, formatterInput) {
   switch (formatterInput.type) {
-    case "DateFormat":
+    case 'DateFormat':
       return formatDate(value, formatterInput.format);
-    case "DateTimeFormat":
+    case 'DateTimeFormat':
       return formatDateTime(value, formatterInput.format);
-    case "TimeFormat":
+    case 'TimeFormat':
       return formatTime(value, formatterInput.format);
     default:
       return value;
   }
 }
 export const fetchByPath = (input, path, accumlator = []) => {
-  const currentPath = path.split(".");
+  const currentPath = path.split('.');
   const head = currentPath.shift();
   if (input && head && input[head] !== undefined) {
     if (!currentPath.length) {
       accumlator.push(input[head]);
     } else {
-      fetchByPath(input[head], currentPath.join("."), accumlator);
+      fetchByPath(input[head], currentPath.join('.'), accumlator);
     }
   }
   return accumlator[0];
 };
 export const processFile = async ({ file }) => {
-  const fileExtension = file.name.split(".").pop();
+  const fileExtension = file.name.split('.').pop();
   return file
     .arrayBuffer()
-    .then((filebuffer) => window.crypto.subtle.digest("SHA-1", filebuffer))
+    .then((filebuffer) => window.crypto.subtle.digest('SHA-1', filebuffer))
     .then((hashBuffer) => {
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       const hashHex = hashArray
-        .map((a) => a.toString(16).padStart(2, "0"))
-        .join("");
+        .map((a) => a.toString(16).padStart(2, '0'))
+        .join('');
       return { file, key: `${hashHex}.${fileExtension}` };
     });
 };

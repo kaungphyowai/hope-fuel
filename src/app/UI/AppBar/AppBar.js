@@ -1,31 +1,31 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import SignalCellularAltIcon from "@mui/icons-material/SignalCellularAlt";
-import LogoutIcon from "@mui/icons-material/Logout";
-import Divider from "@mui/material/Divider";
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import AdbIcon from '@mui/icons-material/Adb';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Divider from '@mui/material/Divider';
 
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import getAuthCurrentUser from "../../utilites/getAuthCurrentUser";
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import getAuthCurrentUser from '../../utilites/getAuthCurrentUser';
 
 // const pages = ["Products", "Pricing", "Blog"];
 //const settings = ['Profile','Account', 'Dashboard', 'Logout'];
 const settings = [
-  { icon: <PersonOutlineIcon />, label: "Account" },
-  { icon: <SignalCellularAltIcon />, label: "Dashboard" },
-  { icon: <LogoutIcon />, label: "Logout" },
+  { icon: <PersonOutlineIcon />, label: 'Account' },
+  { icon: <SignalCellularAltIcon />, label: 'Dashboard' },
+  { icon: <LogoutIcon />, label: 'Logout' },
 ];
 
 function ResponsiveAppBar({ setPage, signOut, userRole }) {
@@ -35,27 +35,32 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
 
   let navItems = [];
 
-  if (userRole == "admin") {
+  if (userRole == 'admin') {
     navItems = [
-      "အသစ်သွင်းခြင်း",
-      "သက်တမ်းတိုးခြင်း",
-      "ဖောင်အဖွင့်အပိတ်",
-      "ငွေစစ်ဆေးခြင်း",
-      "ရှာဖွေခြင်း",
+      'အသစ်သွင်းခြင်း',
+      'သက်တမ်းတိုးခြင်း',
+      'ဖောင်အဖွင့်အပိတ်',
+      'ငွေစစ်ဆေးခြင်း',
+      'ရှာဖွေခြင်း',
     ];
-  } else if (userRole == "Support Agent") {
-    navItems = ["အသစ်သွင်းခြင်း", "သက်တမ်းတိုးခြင်း", "ရှာဖွေခြင်း"];
+  } else if (userRole == 'Support Agent') {
+    navItems = ['အသစ်သွင်းခြင်း', 'သက်တမ်းတိုးခြင်း', 'ရှာဖွေခြင်း'];
   } else {
-    navItems = ["အသစ်သွင်းခြင်း", "သက်တမ်းတိုးခြင်း", "ငွေစစ်ဆေးခြင်း","ရှာဖွေခြင်း"];
+    navItems = [
+      'အသစ်သွင်းခြင်း',
+      'သက်တမ်းတိုးခြင်း',
+      'ငွေစစ်ဆေးခြင်း',
+      'ရှာဖွေခြင်း',
+    ];
   }
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
-    console.log("opennev");
+    console.log('opennev');
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-    console.log("openuser");
+    console.log('openuser');
   };
 
   const handleCloseNavMenu = () => {
@@ -66,13 +71,13 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
   const handleCloseUserMenu = (event, setting) => {
     setAnchorElUser(null);
     switch (setting.label) {
-      case "Account":
-        router.push("/");
+      case 'Account':
+        router.push('/');
         break;
-      case "Dashboard":
-        router.push("/");
+      case 'Dashboard':
+        router.push('/');
         break;
-      case "Logout":
+      case 'Logout':
         signOut();
         break;
       default:
@@ -83,18 +88,17 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
 
   const handleClick = (page) => {
     console.log(page);
-    if (page == "အသစ်သွင်းခြင်း") {
+    if (page == 'အသစ်သွင်းခြင်း') {
       console.log(page);
       setPage(1);
-    } else if (page == "ဖောင်အဖွင့်အပိတ်") {
+    } else if (page == 'ဖောင်အဖွင့်အပိတ်') {
       console.log(page);
       setPage(3);
-    } else if (page == "သက်တမ်းတိုးခြင်း") {
+    } else if (page == 'သက်တမ်းတိုးခြင်း') {
       setPage(2);
-    } else if (page == "ငွေစစ်ဆေးခြင်း") {
+    } else if (page == 'ငွေစစ်ဆေးခြင်း') {
       setPage(4);
-    }
-    else if (page == "ရှာဖွေခြင်း") {
+    } else if (page == 'ရှာဖွေခြင်း') {
       setPage(5);
     }
   };
@@ -103,7 +107,7 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -111,36 +115,34 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
             }}
           >
             Hope
           </Typography>
 
-          <Box sx={{ display: { xs: "none", sm: "block" }, flexGrow: 1 }}>
-            {(
-              navItems.map((item) => (
-                <Button
-                  key={item}
-                  sx={{
-                    color: "#fff",
-                    ":hover": {
-                      cursor: "pointer",
-                      color: "secondary.yellow400",
-                      textDecoration: "none",
-                    },
-                  }}
-                  onClick={() => handleClick(item)}
-                >
-                  {item}
-                </Button>
-              ))
-            )}
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, flexGrow: 1 }}>
+            {navItems.map((item) => (
+              <Button
+                key={item}
+                sx={{
+                  color: '#fff',
+                  ':hover': {
+                    cursor: 'pointer',
+                    color: 'secondary.yellow400',
+                    textDecoration: 'none',
+                  },
+                }}
+                onClick={() => handleClick(item)}
+              >
+                {item}
+              </Button>
+            ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -150,17 +152,17 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: "45px" }}
+              sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right',
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right',
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
@@ -168,7 +170,7 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
               {settings.map((setting, index) => [
                 index === 2 && <Divider />,
                 <MenuItem
-                  sx={{ color: index === 2 ? "primary.red700" : "black" }}
+                  sx={{ color: index === 2 ? 'primary.red700' : 'black' }}
                   onClick={(event) => handleCloseUserMenu(event, setting)}
                 >
                   {setting.icon}
