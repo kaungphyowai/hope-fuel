@@ -208,4 +208,9 @@ export async function POST(req) {
       { status: 500 },
     );
   }
+  
 }
+  export async function GET() {
+    return NextResponse.json({ message: 'Hello' });
+  }
+

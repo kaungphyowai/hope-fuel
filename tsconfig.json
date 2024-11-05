@@ -24,6 +24,6 @@
     "**/*.ts",
     "**/*.tsx",
     "src/app/api/uploadFile/route.js"
-  ],
+, "src/app/api/submitPayment/route.test.js"  ],
   "exclude": ["node_modules"]
 }
