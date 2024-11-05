@@ -2,7 +2,8 @@
 
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import checkUserSubmit from '../../utilites/checkUserSubmit';
-import { use, useState } from 'react';
+import React, { useState } from 'react';
+
 import { ExtendOrNot } from '../ExtendOrNot';
 import CreateForm from '../CreateForm';
 import ExtendForm from '../ExtendForm';
@@ -10,7 +11,6 @@ import { useSearchParams } from 'next/navigation';
 
 export default function CheckUser({ userRole }) {
   const [userExistState, setUserExistState] = useState(false);
-
   const [finishCheck, setFinishCheck] = useState(false);
   const [createFormShow, setCreateFormShow] = useState(false);
   const [userInfo, setUserInfo] = useState({});
@@ -26,7 +26,7 @@ export default function CheckUser({ userRole }) {
       <CircularProgress />
     </Box>
   ) : (
-    <>
+    <div>
       <Box
         component="form"
         onSubmit={(event) =>
@@ -75,14 +75,14 @@ export default function CheckUser({ userRole }) {
           Check
         </Button>
 
-        {/* If user don't have permission */}
+        {/* If user doesn't have permission */}
         {!hasPermissonThisMonth && userRole !== 'admin' && (
           <h1>
             ယခုလအတွင်း ဖော်ပြပါထောက်ပို့တပ်သားအတွက် စာရင်းသွင်းထားပြီးပါပြီ။
             ထူးခြားဖြစ်စဥ် ဖြစ်ပါက Admin ကိုဆက်သွယ်ပါ
           </h1>
         )}
-        {!hasPermissonThisMonth && userRole == 'admin' && (
+        {!hasPermissonThisMonth && userRole === 'admin' && (
           <>
             <h1>
               ဒီ user က ဒီလအတွက် သွင်းပြီးသွားပါပြီ။ Admin
@@ -92,7 +92,7 @@ export default function CheckUser({ userRole }) {
           </>
         )}
 
-        {/* Ask want to extend or not */}
+        {/* Ask if they want to extend or not */}
         {userExistState && hasPermissonThisMonth && (
           <ExtendOrNot
             userInfo={userInfo}
@@ -101,6 +101,7 @@ export default function CheckUser({ userRole }) {
           />
         )}
       </Box>
+
       {hasContinue && (
         <ExtendForm
           userInfo={userInfo}
@@ -116,6 +117,6 @@ export default function CheckUser({ userRole }) {
           formFillingPerson={user}
         />
       )}
-    </>
+    </div>
   );
 }
