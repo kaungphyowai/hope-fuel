@@ -1,11 +1,10 @@
-// Get the client
 import mysql from 'mysql2/promise';
-
-// import getDatabaseCredentials from '../secrectManager'; // Adjust the path as needed
+require('dotenv').config({ path: '.env.local' });
 
 export default async function db(query, value) {
+  let connection;
   try {
-    const connection = await mysql.createConnection({
+    connection = await mysql.createConnection({
       host: process.env.DATABASEHOST,
       user: process.env.DATABASEUSER,
       database: process.env.DATABASE,
@@ -14,15 +13,23 @@ export default async function db(query, value) {
       waitForConnections: true,
     });
     console.log('[DB] Database Connected');
-    if (!connection) {
-      console.log('database connection error');
-    }
+    console.log('Database Config:', {
+      host: process.env.DATABASEHOST,
+      user: process.env.DATABASEUSER,
+      password: process.env.DATABASEPASSWORD,
+      database: process.env.DATABASE,
+    });
 
-    let [result] = await connection.query(query, value);
+    const [result] = await connection.execute(query, value);
     console.log('[DB] query success');
     return result;
   } catch (error) {
     console.log('[DB] query error');
     console.error(error);
+  } finally {
+    if (connection) {
+      await connection.end();
+      console.log('[DB] Connection closed');
+    }
   }
 }
