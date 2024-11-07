@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import db from '../../utilites/db';
 import calculateExpireDate from '../../utilites/calculateExpireDate';
 import { max } from 'date-fns';
+import { log } from 'console';
 
 
 //Insert Into Customer Table
@@ -110,6 +111,7 @@ async function maxHopeFuelID() {
 }
 
 export async function POST(req) {
+ 
   try {
     if (!req.body) {
       return NextResponse.json(
@@ -117,8 +119,9 @@ export async function POST(req) {
         { status: 400 },
       );
     }
-
-    const json = req.body ;
+console.log('req.body:', req.body);
+    let json = req.body ;
+    
 
     // Destructure and validate input fields
     let {
@@ -134,7 +137,7 @@ export async function POST(req) {
       walletId,
       screenShot,
     } = json;
-
+ console.log('json:', json);
     month = parseInt(month);
 
     if (!screenShot || screenShot.length === 0) {
