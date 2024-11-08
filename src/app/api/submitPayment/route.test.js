@@ -16,11 +16,11 @@ describe('API Test - Submit Payment Information', () => {
     jest.clearAllMocks();
   });
 
- afterAll(async () => { 
+  afterAll(async () => {
     if (db.end) await db.end();
   });
 
-  it('should return success response with transaction details', async () => {
+  it('should return success response with transactionId, screenshotId and logId', async () => {
     const requestData = {
       customerName: 'abc',
       customerEmail: 'abc@gmail.com',
@@ -42,7 +42,9 @@ describe('API Test - Submit Payment Information', () => {
       body: requestData,
     });
 
+    //api call to submit payment
     const response = await POST(req);
+
     const processedResponse = {
       ...response,
       screenShotId: response.screenShotId.map((item) => ({
@@ -52,20 +54,20 @@ describe('API Test - Submit Payment Information', () => {
         ),
       })),
     };
+    console.log('processedResponse:', processedResponse);
 
-   expect(processedResponse).toEqual(
-     expect.objectContaining({
-       logId: expect.any(Number),
-       screenShotId: expect.arrayContaining([]), // Expect empty array if URLs are invalid
-       status: 'success',
-       transactionId: expect.any(Number),
-     }),
-     expect.objectContaining({
-       status: 200,
-     }),
-   );
+    expect(processedResponse).toEqual(
+      expect.objectContaining({
+        logId: expect.any(Number),
+        screenShotId: expect.arrayContaining([]), // Expect empty array if URLs are invalid
+        status: 'success',
+        transactionId: expect.any(Number),
+      }),
+      expect.objectContaining({
+        status: 200,
+      }),
+    );
 
-   
-    expect(response.status).toBe("success"); 
+    expect(response.status).toBe('success');
   });
 });

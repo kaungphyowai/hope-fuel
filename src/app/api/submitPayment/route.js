@@ -4,7 +4,6 @@ import calculateExpireDate from '../../utilites/calculateExpireDate';
 import { max } from 'date-fns';
 import { log } from 'console';
 
-
 //Insert Into Customer Table
 async function InsertCustomer(
   customerName,
@@ -111,7 +110,6 @@ async function maxHopeFuelID() {
 }
 
 export async function POST(req) {
- 
   try {
     if (!req.body) {
       return NextResponse.json(
@@ -119,9 +117,8 @@ export async function POST(req) {
         { status: 400 },
       );
     }
-console.log('req.body:', req.body);
-    let json = req.body ;
-    
+    console.log('req.body:', req.body);
+    let json = req.body;
 
     // Destructure and validate input fields
     let {
@@ -137,7 +134,7 @@ console.log('req.body:', req.body);
       walletId,
       screenShot,
     } = json;
- console.log('json:', json);
+    console.log('json:', json);
     month = parseInt(month);
 
     if (!screenShot || screenShot.length === 0) {
