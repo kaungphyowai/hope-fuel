@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - development
+      - feat/*
   pull_request:
     branches:
       - main
       - development
+      - feat/*
 
 jobs:
   build:
@@ -28,9 +30,14 @@ jobs:
       
       - name: format the code
         run: npm run format
+       
+      - name: Lint the code
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
 
       - name: Build the project
         run: npm run build
 
-      - name: Run tests
-        run: npm run test
+     
