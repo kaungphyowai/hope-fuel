@@ -7,7 +7,7 @@ export default async function extendFormSubmit(event, currency, supportRegion, f
     const data = new FormData(event.currentTarget);
     const amount = data.get("amount")
     const month = data.get("month");
-    const manychat = data.get('manychat')
+    const manychat = data.get('manyChat')
     const wallet = JSON.parse(data.get("wallets"))
     const notes = data.get("notes")
     const contactLink = data.get("contactLink");

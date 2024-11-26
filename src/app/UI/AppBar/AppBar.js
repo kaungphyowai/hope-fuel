@@ -15,98 +15,81 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SignalCellularAltIcon from "@mui/icons-material/SignalCellularAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
-
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import getAuthCurrentUser from "../../utilites/getAuthCurrentUser";
+import { signOut } from "aws-amplify/auth";
+import { useUser } from "../../context/UserContext";
+import { set } from "date-fns";
 
-// const pages = ["Products", "Pricing", "Blog"];
-//const settings = ['Profile','Account', 'Dashboard', 'Logout'];
 const settings = [
   { icon: <PersonOutlineIcon />, label: "Account" },
   { icon: <SignalCellularAltIcon />, label: "Dashboard" },
   { icon: <LogoutIcon />, label: "Logout" },
 ];
 
-function ResponsiveAppBar({ setPage, signOut, userRole }) {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+export default function ResponsiveAppBar({ userRole }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
 
-  // useEffect to handle the delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false); // Set to false after 4 seconds to stop loading
-    }, 3000);
+  // Define navigation items
+  let navItems = [];
 
-    return () => clearTimeout(timer); // Cleanup the timer on component unmount
-  }, []);
-
-  //Check if the user is Admin or not
-  let navItems = null;
-  //   userRole !== "admin"
-  //     ? ["အသစ်သွင်းခြင်း", "သက်တမ်းတိုးခြင်း", "ငွေစစ်ဆေးခြင်း"]
-  //     : ["အသစ်သွင်းခြင်း", "သက်တမ်းတိုးခြင်း", "ဖောင်အဖွင့်အပိတ်", "ငွေစစ်ဆေးခြင်း"];
-
-  if (userRole == "admin") {
+  if (userRole === "admin") {
     navItems = [
-      "အသစ်သွင်းခြင်း",
-      "သက်တမ်းတိုးခြင်း",
-      "ဖောင်အဖွင့်အပိတ်",
-      "ငွေစစ်ဆေးခြင်း",
+      { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
+      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      { label: "ဖောင်အဖွင့်အပိတ်", path: "/formToggle" },
+      { label: "ငွေစစ်ဆေးခြင်း", path: "/paymentCheck" },
+      { label: "ရှာဖွေခြင်း", path: "/search" },
+      { label: "HopeFuelDetail", path: "/details" },
     ];
-  } else if (userRole == "Support Agent") {
-    navItems = ["အသစ်သွင်းခြင်း", "သက်တမ်းတိုးခြင်း"];
+  } else if (userRole === "Support Agent") {
+    navItems = [
+      { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
+      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      { label: "ရှာဖွေခြင်း", path: "/search" },
+      { label: "HopeFuelDetail", path: "/details" },
+    ];
   } else {
-    navItems = ["အသစ်သွင်းခြင်း", "သက်တမ်းတိုးခြင်း", "ငွေစစ်ဆေးခြင်း"];
+    navItems = [
+      { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
+      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      { label: "ငွေစစ်ဆေးခြင်း", path: "/paymentCheck" },
+      { label: "ရှာဖွေခြင်း", path: "/search" },
+      { label: "HopeFuelDetail", path: "/details" },
+    ];
   }
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-    console.log("opennev");
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-    console.log("openuser");
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-    setPage();
-  };
-
-  const handleCloseUserMenu = (event, setting) => {
+  const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+const {setUser} = useUser();
+
+
+  const handleUserMenuClick = async (setting) => {
+    handleCloseUserMenu();
     switch (setting.label) {
       case "Account":
-        router.push("/");
+        router.push("/account");
         break;
       case "Dashboard":
-        router.push("/");
+        router.push("/dashboard");
         break;
       case "Logout":
-        signOut();
+        await signOut({ global: true });
+        setUser(null);
+        router.push("/login");
         break;
       default:
-        // Handle any other case if necessary
         break;
     }
   };
 
-  const handleClick = (page) => {
-    console.log(page);
-    if (page == "အသစ်သွင်းခြင်း") {
-      console.log(page);
-      setPage(1);
-    } else if (page == "ဖောင်အဖွင့်အပိတ်") {
-      console.log(page);
-      setPage(3);
-    } else if (page == "သက်တမ်းတိုးခြင်း") {
-      setPage(2);
-    } else if (page == "ငွေစစ်ဆေးခြင်း") {
-      setPage(4);
-    }
+  const handleNavItemClick = (path) => {
+    router.push(path);
   };
 
   return (
@@ -133,64 +116,45 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
           </Typography>
 
           <Box sx={{ display: { xs: "none", sm: "block" }, flexGrow: 1 }}>
-            {isLoading ? ( // Conditionally render "Loading" or nav items
-              <Typography variant="h6" sx={{ color: "#fff" }}>
-                Loading...
-              </Typography>
-            ) : (
-              navItems.map((item) => (
-                <Button
-                  key={item}
-                  sx={{
-                    color: "#fff",
-                    ":hover": {
-                      cursor: "pointer",
-                      color: "secondary.yellow400",
-                      textDecoration: "none",
-                    },
-                  }}
-                  onClick={() => handleClick(item)}
-                >
-                  {item}
-                </Button>
-              ))
-            )}
+            {navItems.map((item) => (
+              <Button
+                key={item.label}
+                sx={{ color: "#fff" }}
+                onClick={() => handleNavItemClick(item.path)}
+              >
+                {item.label}
+              </Button>
+            ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="User" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
               sx={{ mt: "45px" }}
-              id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
                 vertical: "top",
                 horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting, index) => [
-                index === 2 && <Divider />,
+              {settings.map((setting, index) => (
                 <MenuItem
-                  sx={{ color: index === 2 ? "primary.red700" : "black" }}
-                  onClick={(event) => handleCloseUserMenu(event, setting)}
+                  key={index}
+                  onClick={() => handleUserMenuClick(setting)}
+                  sx={{ color: setting.label === "Logout" ? "red" : "black" }}
                 >
                   {setting.icon}
                   <Typography textAlign="center" sx={{ ml: 1.5 }}>
                     {setting.label}
                   </Typography>
-                </MenuItem>,
-              ])}
+                </MenuItem>
+              ))}
             </Menu>
           </Box>
         </Toolbar>
@@ -198,4 +162,3 @@ function ResponsiveAppBar({ setPage, signOut, userRole }) {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;

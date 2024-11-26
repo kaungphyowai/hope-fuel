@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import db from "../../utilites/db";
 import calculateExpireDate from "../../utilites/calculateExpireDate";
 import { max } from "date-fns";
-
+import moment from "moment-timezone";
 //Insert Into Customer Table
 async function InsertCustomer(
   customerName,
@@ -57,11 +57,16 @@ async function createNote(note, agentID) {
 
 //Insert Into ScreenShot Table
 async function createScreenShot(screenShot, transactionsID) {
-    if (!screenShot || screenShot.length === 0) {
-      throw new Error("You need to provide a screenshot");
-    }
+  if (!screenShot || screenShot.length === 0) {
+    throw new Error("You need to provide a screenshot");
+  }
 
-  console.log("From createScreenshotDB: with TransactionID"+transactionsID + " and  screenshot" + screenShot);
+  console.log(
+    "From createScreenshotDB: with TransactionID" +
+      transactionsID +
+      " and  screenshot" +
+      screenShot
+  );
 
   let screenShotLink = screenShot.map(async (item) => {
     const query = `insert into ScreenShot (TransactionID , ScreenShotLink) values ( ?, ?)`;
@@ -71,7 +76,7 @@ async function createScreenShot(screenShot, transactionsID) {
 
     try {
       const result = await db(query, values);
-   
+
       return result.insertId;
     } catch (error) {
       console.error("Error inserting screenshot:", error);
@@ -79,7 +84,6 @@ async function createScreenShot(screenShot, transactionsID) {
     }
   });
   return screenShotLink;
-
 }
 
 //Insert Into TransactionAgent Table
@@ -89,34 +93,43 @@ async function InsertTransactionLog(transactionId, agentId) {
   try {
     const result = await db(query, values);
     console.log("result " + result);
-  return result.insertId;
-    } catch (error) {
-      console.error("Error inserting log", error);
-      return;
-    }
-
+    return result.insertId;
+  } catch (error) {
+    console.error("Error inserting log", error);
+    return;
+  }
+}
+async function InsertFormStatus(transactionId) {
+  const query = `INSERT INTO FormStatus (TransactionID, TransactionStatusID) VALUES (?, ?)`;
+  const values = [transactionId, 1];
+  try {
+    const result = await db(query, values);
+    console.log("result " + result);
+    return result.insertId;
+  } catch (error) {
+    console.error("Error inserting log", error);
+    return;
+  }
 }
 
 async function maxHopeFuelID() {
-  const maxHopeFuelID_Query = `SELECT MAX(HopeFuelID) AS maxHopeFuelID FROM Transactions`; 
+  const maxHopeFuelID_Query = `SELECT MAX(HopeFuelID) AS maxHopeFuelID FROM Transactions`;
   const result = await db(maxHopeFuelID_Query);
 
-   console.log(result);
-   return result[0]["maxHopeFuelID"];
+  console.log(result);
+  return result[0]["maxHopeFuelID"];
 }
 
 export async function POST(req) {
   try {
-  
-   if (!req.body) {
-
-     return NextResponse.json(
-       { error: "Request body is empty" },
-       { status: 400 }
-     );
-   }
+    if (!req.body) {
+      return NextResponse.json(
+        { error: "Request body is empty" },
+        { status: 400 }
+      );
+    }
     let json = await req.json();
-    console.log(json)
+    console.log(json);
 
     let {
       customerName,
@@ -134,26 +147,22 @@ export async function POST(req) {
 
     month = parseInt(month);
 
-      if (!screenShot || screenShot.length === 0) {
-        return NextResponse.json(
-          { error: "You need to provide a screenshot" },
-          { status: 400 }
-        );
-      }
+    if (!screenShot || screenShot.length === 0) {
+      return NextResponse.json(
+        { error: "You need to provide a screenshot" },
+        { status: 400 }
+      );
+    }
 
-      if (contactLink.trim() === "") {
-         contactLink = null;
-        
-      }
-      
-   
+    if (contactLink.trim() === "") {
+      contactLink = null;
+    }
 
     let noteId = null;
-    if (note && note !== "")
-   { 
-    noteId = await createNote(note, agentId);
-     console.log("noteId: ", noteId);
-  }
+    if (note && note !== "") {
+      noteId = await createNote(note, agentId);
+      console.log("noteId: ", noteId);
+    }
 
     const customerId = await InsertCustomer(
       customerName,
@@ -163,21 +172,25 @@ export async function POST(req) {
       contactLink,
       month
     );
-  
- let  nextHopeFuelID = await maxHopeFuelID(); 
- console.log("nextHopeFuelID", nextHopeFuelID);
 
- if (nextHopeFuelID === null) {
-   nextHopeFuelID = 0;
- }
- nextHopeFuelID++; 
-  console.log("Incremented maxHopeFuelID:", nextHopeFuelID);
+    let nextHopeFuelID = await maxHopeFuelID();
+    console.log("nextHopeFuelID", nextHopeFuelID);
 
-//insert into transaction table
+    if (nextHopeFuelID === null) {
+      nextHopeFuelID = 0;
+    }
+    nextHopeFuelID++;
+    console.log("Incremented maxHopeFuelID:", nextHopeFuelID);
+    let timeZone = "Asia/Bangkok";
+    let transactionDateWithThailandTimeZone = moment()
+      .tz(timeZone)
+      .format("YYYY-MM-DD HH:mm:ss");
+
+    //insert into transaction table
     const query = `
      INSERT INTO Transactions   
     (CustomerID, Amount,  SupportRegionID, WalletID, TransactionDate, NoteID, Month,HopeFuelID) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?,  ? , ?, ?, ?)
 
     `;
     const values = [
@@ -185,25 +198,26 @@ export async function POST(req) {
       amount,
       supportRegionId,
       walletId,
-      new Date(),
+      transactionDateWithThailandTimeZone,
       noteId,
       month,
-      nextHopeFuelID
-     
+      nextHopeFuelID,
     ];
     const result = await db(query, values);
 
     const transactionId = result.insertId;
     //console.log("Transaction ID " + transactionId);
+    const formStatusId = await InsertFormStatus(transactionId);
 
     const screenShotIds = await createScreenShot(screenShot, transactionId);
     const logId = await InsertTransactionLog(transactionId, agentId);
     // console.log("Screenshot ids are: " + screenShotIds)
-     console.log("Transaction Result: ", result);
+    console.log("Transaction Result: ", result);
     return NextResponse.json({
       status: "success",
       transactionId,
       screenShotIds,
+      formStatusId,
     });
   } catch (error) {
     console.log(error);

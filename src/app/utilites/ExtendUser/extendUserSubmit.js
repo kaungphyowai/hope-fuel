@@ -1,14 +1,11 @@
 
 export default async function extendUserSubmit(event,userInfo, currency, supportRegion ,files, setloading, formFillingPerson, setAmountValidate, setmonthValidate, setmanyChatValidate, fileExist, setfileExist, wallets, agentId) {
-    event.preventDefault();
-    // setloading(true)
-    setAmountValidate(false);
-    setmonthValidate(false)
-    setmanyChatValidate(false)
+  event.preventDefault();
+  
     const data = new FormData(event.currentTarget);
     const amount = data.get("amount")
     const month = data.get("month");
-    const manychat = data.get('manychat')
+    const manychat = data.get('manyChat')
     const wallet = JSON.parse(data.get("wallets"))
     const notes = data.get("notes")
     const contactLink = data.get("contactLink")
@@ -131,7 +128,7 @@ export default async function extendUserSubmit(event,userInfo, currency, support
       }
       )
     
-console.log("Raw:"+ raw);
+    console.log("Raw:"+ raw);
 
     var requestOptions = {
       method: 'POST',

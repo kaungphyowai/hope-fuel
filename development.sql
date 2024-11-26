@@ -115,10 +115,10 @@ CREATE TABLE Transactions (
     FOREIGN KEY (NoteID) REFERENCES Note(NoteID)
 );
 
-INSERT INTO Transactions (CustomerID, SupportRegionID, WalletID, Amount, PaymentCheck, PaymentCheckTime, NoteID, TransactionDate, PaymentDenied, Month) VALUES 
-(1, 1, 1, 100.00, TRUE, '2024-01-02 10:00:00', 1, '2024-01-02 09:55:00', FALSE, 1),
-(2, 2, 2, 200.00, FALSE, NULL, 2, '2024-02-20 15:30:00', TRUE, 2),
-(3, 3, 3, 300.00, TRUE, '2024-03-10 12:00:00', 3, '2024-03-10 11:50:00', FALSE, 3);
+INSERT INTO Transactions (CustomerID, SupportRegionID, WalletID, Amount, PaymentCheck, PaymentCheckTime, NoteID, TransactionDate, PaymentDenied, Month, HopeFuelID) VALUES 
+(1, 1, 1, 100.00, TRUE, '2024-01-02 10:00:00', 1, '2024-01-02 09:55:00', FALSE, 1,1),
+(2, 2, 2, 200.00, FALSE, NULL, 2, '2024-02-20 15:30:00', TRUE, 2,2),
+(3, 3, 3, 300.00, TRUE, '2024-03-10 12:00:00', 3, '2024-03-10 11:50:00', FALSE, 3,3);
 
 -- Create ScreenShot table and insert demo data
 CREATE TABLE ScreenShot (
@@ -147,3 +147,29 @@ INSERT INTO TransactionAgent (TransactionID, AgentID, LogDate) VALUES
 (1, 1, '2024-01-02 10:05:00'),
 (2, 2, '2024-02-20 15:35:00'),
 (3, 3, '2024-03-10 12:05:00');
+
+-- Create Table for PaymentTeam Form Status
+CREATE TABLE TransactionStatus (
+   TransactionStatusID INT AUTO_INCREMENT PRIMARY KEY,
+   TransactionStatus VARCHAR(255) NOT NULL
+
+);
+-- Insert data into FormStatus table
+INSERT INTO TransactionStatus (TransactionStatusID, TransactionStatus) VALUES 
+(1, 'ဖောင်တင်သွင်းခြင်း'),
+(2, 'စစ်ဆေးပြီး'),
+(3, 'ပြီးစီး'),
+(4,'ပယ်ဖျက်');
+
+
+CREATE TABLE FormStatus (
+    FormStatusID INT AUTO_INCREMENT PRIMARY KEY,
+    TransactionID INT,
+    TransactionStatusID INT,
+    FOREIGN KEY (TransactionID) REFERENCES Transactions(TransactionID),
+    FOREIGN KEY (TransactionStatusID) REFERENCES TransactionStatus(TransactionStatusID)
+
+);
+
+
+

@@ -1,13 +1,12 @@
 // import { NextResponse } from "next/server";
 // import db from "../../utilites/db";
 
-
 // async function getCustomerId(customerName, customerEmail)
 // {
 //   var myHeaders = new Headers();
 //     myHeaders.append("Authorization", `Bearer ${process.env.AIRTABLE_TOKEN}`);
 //     // myHeaders.append("Cookie", "brw=brwb8tzTqMzSEOnxJ; AWSALB=VqfDhfXjv8JiCp3lJNYXbUYmTndWTwyFShNBsWdkDM8qt85zGxNFW9yr+/FLQmTw7nAbahafAP1b1jC/mCjL+x5gJx8QYlmSGSeiIh1TKQ/PZosgNCkmW1HYRcwe; AWSALBCORS=VqfDhfXjv8JiCp3lJNYXbUYmTndWTwyFShNBsWdkDM8qt85zGxNFW9yr+/FLQmTw7nAbahafAP1b1jC/mCjL+x5gJx8QYlmSGSeiIh1TKQ/PZosgNCkmW1HYRcwe");
-    
+
 //     var requestOptions = {
 //       method: 'GET',
 //       headers: myHeaders,
@@ -22,7 +21,6 @@
 
 //     return data.records;
 // }
-
 
 // async function InsertCustomer(
 //   customerName,
@@ -88,7 +86,7 @@
 
 //   let screenShotLink = await screenShot.map(async (item) => {
 //     const query = `insert into ScreenShot (TransactionID , ScreenShotLink) values ( ?, ?)`;
-    
+
 //     const path = String(item.url).substring(0,String(item.url).indexOf('?'))
 //     const values = [transactionsID, path];
 
@@ -99,7 +97,7 @@
 //       return result.insertId;
 //     } catch (error) {
 //       console.error("Error inserting ScreenShot:", error);
-//       return 
+//       return
 //     }
 //   })
 //   return screenShotLink
@@ -142,8 +140,8 @@
 //     console.log("noteId: ", noteId);
 
 //     const query = `
-//      INSERT INTO Transactions   
-//     (CustomerID, Amount, AgentID, SupportRegionID, WalletID, TransactionDate, NoteID, Month) 
+//      INSERT INTO Transactions
+//     (CustomerID, Amount, AgentID, SupportRegionID, WalletID, TransactionDate, NoteID, Month)
 //       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 
 //     `;
@@ -171,15 +169,14 @@
 //   }
 // }
 
-
 import { NextResponse } from "next/server";
 import db from "../../utilites/db";
-import recentExpireDate from '../../utilites/recentExpireDate.js'
-import calculateExpireDate from '../../utilites/calculateExpireDate'
+import recentExpireDate from "../../utilites/recentExpireDate.js";
+import calculateExpireDate from "../../utilites/calculateExpireDate";
 
-import maxHopeFuelID from '../../utilites/maxHopeFuelID.js'
+import maxHopeFuelID from "../../utilites/maxHopeFuelID.js";
 import exp from "constants";
-
+import moment from "moment-timezone";
 
 async function InsertCustomer(
   customerName,
@@ -191,7 +188,6 @@ async function InsertCustomer(
   cardId,
   month
 ) {
-
   let raw = {
     customerName,
     customerEmail,
@@ -200,35 +196,39 @@ async function InsertCustomer(
     contactLink,
     expireDate,
     cardId,
-    month
+    month,
+  };
+
+  let nextExpireDate = null;
+  let lastDayOfthisMonth = calculateExpireDate(new Date(), 0, 0);
+  console.log(lastDayOfthisMonth);
+  console.log(expireDate);
+  let isEedCurrent =
+    expireDate.getFullYear() >= lastDayOfthisMonth.getFullYear() &&
+    expireDate.getMonth() >= lastDayOfthisMonth.getMonth();
+  console.log(expireDate.getDate());
+  console.log(lastDayOfthisMonth.getDate());
+  console.log("isEedCurrent is ");
+  console.log(isEedCurrent);
+
+  if (isEedCurrent) {
+    nextExpireDate = calculateExpireDate(
+      expireDate,
+      parseInt(month),
+      !isEedCurrent
+    );
+    console.log(nextExpireDate);
+  } else {
+    nextExpireDate = calculateExpireDate(
+      new Date(),
+      parseInt(month),
+      !isEedCurrent
+    );
+    console.log("The calcualte expire date is .");
+    console.log(expireDate);
   }
 
-  
-  let nextExpireDate = null;
-  let lastDayOfthisMonth = calculateExpireDate(new Date(), 0,0);
-  console.log(lastDayOfthisMonth)
-  console.log(expireDate)
-  let isEedCurrent = (expireDate.getFullYear() >= lastDayOfthisMonth.getFullYear()) && (expireDate.getMonth() >= lastDayOfthisMonth.getMonth());
-  console.log(expireDate.getDate())
-  console.log(lastDayOfthisMonth.getDate())
-  console.log("isEedCurrent is ")
-  console.log(isEedCurrent)
-      
-      if(isEedCurrent)
-        {
-          
-          nextExpireDate = calculateExpireDate(expireDate, parseInt(month), !isEedCurrent)
-          console.log(nextExpireDate)
-        }
-        else
-        {
-          nextExpireDate = calculateExpireDate(new Date(), parseInt(month), !isEedCurrent)
-          console.log("The calcualte expire date is .")
-          console.log(expireDate)
-        }
-
-
-  console.log(nextExpireDate)
+  console.log(nextExpireDate);
   const query = `
     INSERT INTO Customer (Name, Email, AgentID, ManyChatID, ContactLink, ExpireDate, CardID ) VALUES (?, ?, ?, ?, ?, ? , ?)
     `;
@@ -239,7 +239,7 @@ async function InsertCustomer(
     manyChatId,
     contactLink,
     nextExpireDate,
-    cardId
+    cardId,
   ];
   try {
     const result = await db(query, values);
@@ -269,26 +269,26 @@ async function createNote(note, agentID) {
   }
 }
 
-async function createScreenShot(screenShot,transactionsID) {
-  console.log(transactionsID +  "  " + screenShot)
+async function createScreenShot(screenShot, transactionsID) {
+  console.log(transactionsID + "  " + screenShot);
 
   let screenShotLink = await screenShot.map(async (item) => {
     const query = `insert into ScreenShot (TransactionID , ScreenShotLink) values ( ?, ?)`;
-    
-    const path = String(item.url).substring(0,String(item.url).indexOf('?'))
+
+    const path = String(item.url).substring(0, String(item.url).indexOf("?"));
     const values = [transactionsID, path];
 
     try {
       const result = await db(query, values);
-      console.log("result " + result)
+      console.log("result " + result);
       // console.log("Result: ", result);
       return result.insertId;
     } catch (error) {
       console.error("Error inserting ScreenShot:", error);
-      return 
+      return;
     }
-  })
-  return screenShotLink
+  });
+  return screenShotLink;
   // return screenShotLink;
 }
 export async function POST(req) {
@@ -308,16 +308,13 @@ export async function POST(req) {
       walletId,
       screenShot,
       expireDate,
-      cardId
+      cardId,
     } = json;
-    month = parseInt(month)
-    console.log(json)
+    month = parseInt(month);
+    console.log(json);
 
-
-    if(expireDate)
-    {
-      expireDate = new Date(expireDate)
-     
+    if (expireDate) {
+      expireDate = new Date(expireDate);
     }
 
     if (!screenShot) {
@@ -341,16 +338,18 @@ export async function POST(req) {
     const noteId = await createNote(note, agentId);
     console.log("noteId: ", noteId);
 
-
-    let  nextHopeFuelID = await maxHopeFuelID(); 
+    let nextHopeFuelID = await maxHopeFuelID();
     console.log("nextHopeFuelID", nextHopeFuelID);
-   
+
     if (nextHopeFuelID === null) {
       nextHopeFuelID = 0;
     }
-    nextHopeFuelID++; 
-     console.log("Incremented maxHopeFuelID:", nextHopeFuelID);
-
+    nextHopeFuelID++;
+    console.log("Incremented maxHopeFuelID:", nextHopeFuelID);
+    let timeZone = "Asia/Bangkok";
+    let transactionDateWithThailandTimeZone = moment()
+      .tz(timeZone)
+      .format("YYYY-MM-DD HH:mm:ss");
     const query = `
      INSERT INTO Transactions   
     (CustomerID, Amount, SupportRegionID, WalletID, TransactionDate, NoteID, Month, PaymentCheck, HopeFuelID) 
@@ -362,29 +361,27 @@ export async function POST(req) {
       amount,
       supportRegionId,
       walletId,
-      new Date(),
+      transactionDateWithThailandTimeZone,
       noteId,
       month,
       false,
-      nextHopeFuelID
+      nextHopeFuelID,
     ];
     const result = await db(query, values);
 
     const transactionId = result.insertId;
-    console.log("Transaction ID " + transactionId)
+    console.log("Transaction ID " + transactionId);
 
-    const screenShotIds = await createScreenShot(screenShot, transactionId)
-    console.log("Screenshot ids are: " + screenShotIds)
+    const screenShotIds = await createScreenShot(screenShot, transactionId);
+    console.log("Screenshot ids are: " + screenShotIds);
     console.log("Result: ", result);
 
     await db(
       `INSERT INTO TransactionAgent (
           TransactionID, AgentID, LogDate
       ) VALUES (?, ?, ?)`,
-      [
-          transactionId, agentId, new Date()
-      ]
-  );
+      [transactionId, agentId, new Date()]
+    );
     return Response.json({ status: "success" });
   } catch (error) {
     console.log(error);

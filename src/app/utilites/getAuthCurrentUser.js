@@ -1,26 +1,33 @@
-import {
-  getCurrentUser,
-  fetchUserAttributes,
-  fetchAuthSession,
-} from "aws-amplify/auth";
+import { getCurrentUser, fetchAuthSession } from "aws-amplify/auth";
 
 export default async function getAuthCurrentUser() {
   try {
-    const { email_verified } = await fetchUserAttributes();
-    
-    const session = await fetchAuthSession();
-    const userRole = session.tokens.accessToken.payload["cognito:groups"];
-    const email = session.tokens.idToken.payload.email;
-    const userId = session.tokens.idToken.payload.sub;
+    const { userId } = await getCurrentUser();
 
-    // console.log("The email:", email);
-   // console.log("The userRole:", userRole[0]);
-    // console.log("The session:", JSON.stringify(session, null, 2));
-    // console.log("The details:", JSON.stringify(email_verified, null, 2));
-    //console.log(`The userId: ${userId}`);
-    // console.log("The signInDetails:", JSON.stringify(signInDetails, null, 2)); // Pretty-print the JSON object
-    return { userId, email, email_verified, userRole };
+    const session = await fetchAuthSession();
+
+    console.log("id token", session.tokens.idToken);
+    console.log("access token", session.tokens.accessToken);
+    // Check if the user is authenticated
+    // const currentUser = await Auth.currentAuthenticatedUser();
+    // console.log("Authenticated user:", currentUser);
+
+    // const userAttributes = await Auth.userAttributes(currentUser);
+    // const email_verified = userAttributes.find(
+    //   (attr) => attr.Name === "email_verified"
+    // ).Value;
+
+    // const session = await Auth.currentSession();
+    // const accessToken = session.tokens.accessToken;
+    const email = session.tokens.idToken.payload.email;
+    // const userRole = accessTokenPayload["cognito:groups"];
+
+    return { userId, email };
   } catch (err) {
-    console.log(err);
+    if (err === "not authenticated") {
+      console.error("User is not authenticated");
+    } else {
+      console.error("Error fetching authentication details:", err);
+    }
   }
 }

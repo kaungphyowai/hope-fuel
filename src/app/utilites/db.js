@@ -1,34 +1,21 @@
-// Get the client
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
+import dotenv from "dotenv";
 
-// import getDatabaseCredentials from '../secrectManager'; // Adjust the path as needed
+dotenv.config();
 
-export default async function db(query, value)
-{
+const pool = mysql.createPool({
+  host: process.env.DATABASEHOST,
+  user: process.env.DATABASEUSER,
+  password: process.env.DATABASEPASSWORD,
+  database: process.env.DATABASE,
+  port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10, // Adjust this number based on your server capacity
+  queueLimit: 0,
+});
 
-    try {
-    const connection = await mysql.createConnection({
-
-        host: process.env.DATABASEHOST,
-        user: process.env.DATABASEUSER,
-        database: process.env.DATABASE,
-        password: process.env.DATABASEPASSWORD,
-        port: 3306,
-        waitForConnections: true,
-      });
-      console.log('[DB] Database Connected');
-      if(!connection){
-        console.log("database connection error");
-      }
-
-      let [result] = await connection.query(query, value);
-        console.log("[DB] query success");
-      return result;
-    } catch (error) {
-        console.log("[DB] query error");
-        console.error(error);
-    }
-   
-    
+export default async function db(query, params) {
+  const [rows] = await pool.execute(query, params);
+  console.log("Rows form db:", rows); 
+  return rows; // Return only the rows
 }
-
