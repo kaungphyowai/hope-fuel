@@ -143,16 +143,16 @@ export default function PaymentDetails() {
                   <CreatorInfo creator={data} />
                 </Card>
 
+                <TextField
+                  fullWidth
+                  label="Note"
+                  multiline
+                  rows={3}
+                  value={note} // Use controlled state
+                  onChange={(e) => setNote(e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
                 <FormControl fullWidth>
-                  <TextField
-                    fullWidth
-                    label="Note"
-                    multiline
-                    rows={3}
-                    value={note} // Use controlled state
-                    onChange={(e) => setNote(e.target.value)}
-                  />
-
                   <InputLabel>Status</InputLabel>
                   <Select
                     value={status} // Use controlled state
@@ -169,7 +169,7 @@ export default function PaymentDetails() {
                       HopeFuelID: data.HopeFuelID,
                       Note: note,
                       Status: status,
-                      AgentId: data.AgentId
+                      AgentId: data.AgentId,
                     }}
                   />
                 </FormControl>
