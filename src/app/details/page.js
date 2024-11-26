@@ -14,7 +14,7 @@ import {
   InputLabel,
   Divider,
 } from "@mui/material";
-import ActionButtons from "../UI/Components/ActionButton";
+import ActionButtons from "../UI/Components/ActionButtons";
 import AmountDetails from "../UI/Components/AmountDetails";
 import CardsIssuedList from "../UI/Components/CardIssuedList";
 import CreatorInfo from "../UI/Components/CreatorInfo";
@@ -169,7 +169,7 @@ export default function PaymentDetails() {
                       HopeFuelID: data.HopeFuelID,
                       Note: note,
                       Status: status,
-                      AgentId: data.AgentId
+                      AgentId: data.AgentId,
                     }}
                   />
                 </FormControl>

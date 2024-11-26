@@ -16,7 +16,7 @@ import {
   Button,
   Alert,
 } from "@mui/material";
-import ActionButtons from "../Components/ActionButton";
+import ActionButtons from "../Components/ActionButtons";
 import AmountDetails from "../Components/AmountDetails";
 import CardsIssuedList from "../Components/CardIssuedList";
 import CreatorInfo from "../Components/CreatorInfo";

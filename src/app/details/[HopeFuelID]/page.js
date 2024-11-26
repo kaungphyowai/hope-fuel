@@ -14,14 +14,14 @@ import {
   InputLabel,
   Divider,
 } from "@mui/material";
-import ActionButtons from "../UI/Components/ActionButton";
-import AmountDetails from "../UI/Components/AmountDetails";
-import CardsIssuedList from "../UI/Components/CardIssuedList";
-import CreatorInfo from "../UI/Components/CreatorInfo";
-import SupportRegion from "../UI/Components/SupportRegion";
-import UserInfo from "../UI/Components/UserInfo";
-import HopeFuelIdStatus from "../UI/Components/HopeIdStatus";
-import SearchBarForm from "../search/page";
+import ActionButtons from "../../UI/Components/ActionButtons";
+import AmountDetails from "../../UI/Components/AmountDetails";
+import CardsIssuedList from "../../UI/Components/CardIssuedList";
+import CreatorInfo from "../../UI/Components/CreatorInfo";
+import SupportRegion from "../../UI/Components/SupportRegion";
+import UserInfo from "../../UI/Components/UserInfo";
+import HopeFuelIdStatus from "../../UI/Components/HopeIdStatus";
+import SearchBarForm from "../../search/page";
 import { set } from "date-fns";
 import { Agent } from "http";
 
