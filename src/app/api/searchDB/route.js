@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import db from "../../utilites/db";
-
+import getScreenShotUrl from "../../utilites/getScreenShotUrl";
 // Function to fetch paginated data
 async function getPaginatedData(page) {
   const itemsPerPage = 10;

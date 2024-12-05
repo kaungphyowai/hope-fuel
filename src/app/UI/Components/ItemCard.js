@@ -11,6 +11,7 @@ function ItemCard({ item, onClick }) {
     if (item?.HopeFuelID) {
       router.push(`/details?HopeFuelID=${item.HopeFuelID}`);
     }
+    console.log(item);
   };
 
   return (
@@ -56,9 +57,8 @@ function ItemCard({ item, onClick }) {
           />
         )}
         {/* Display HopeFuelID and Customer Name if available */}
-        <Box sx={{ width : 100 }}>
-          <Typography variant="body1" sx={{ fontWeight: "bold" 
-            , width: 100 }}>
+        <Box sx={{ width: 100 }}>
+          <Typography variant="body1" sx={{ fontWeight: "bold", width: 100 }}>
             HOPEID-{item?.HopeFuelID || "N/A"}
           </Typography>
           <Typography variant="caption" color="text.secondary">

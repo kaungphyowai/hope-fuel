@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "../UI/Components/SearchBar";
 import { Container, Typography, CircularProgress } from "@mui/material";
 import ItemList from "../UI/Components/ItemList";
+import getScreenShotUrl from "../utilites/getScreenShotUrl";
 
 export default function SearchBarForm() {
   const [items, setItems] = useState([]);
@@ -14,28 +15,52 @@ export default function SearchBarForm() {
 
   // Function to fetch data from the API
   const handleSearch = async (HopeFuelID) => {
+    console.log("HopeID is " + HopeFuelID);
     setLoading(true);
     setError(null);
     setNoResults(false);
-
     try {
       const url = HopeFuelID
         ? `/api/searchDB?HopeFuelID=${HopeFuelID}&page=${page}`
         : `/api/searchDB?page=${page}`;
 
       const response = await fetch(url);
+      console.log(response);
 
       if (!response.ok) {
         throw new Error("No item found");
       }
 
       const data = await response.json();
-      console.log("Fetched Data:", data);
 
-      if (data.length === 0 && page === 1) {
-        setNoResults(true);
-      } else {
-        setItems((prevItems) => (page === 1 ? data : [...prevItems, ...data]));
+      if (Array.isArray(data)) {
+        for (let i = 0; i < data.length; i++) {
+          console.log(data[i]);
+          if (Array.isArray(data[i]["ScreenShotLinks"])) {
+            console.log(data[i]["ScreenShotLinks"].length);
+            for (
+              let screenshot = 0;
+              screenshot < data[i]["ScreenShotLinks"].length;
+              screenshot++
+            ) {
+              let tmp = await getScreenShotUrl(
+                data[i]["ScreenShotLinks"][screenshot]
+              );
+              data[i]["ScreenShotLinks"][screenshot] = tmp.href;
+            }
+          }
+        }
+        console.log("my Data:", data);
+
+        if (data.length === 0 && page === 1) {
+          setNoResults(true);
+        } else {
+          console.log("My final data");
+          console.log(data);
+          setItems((prevItems) =>
+            page === 1 ? data : [...prevItems, ...data]
+          );
+        }
       }
     } catch (error) {
       console.error("Search Error:", error);

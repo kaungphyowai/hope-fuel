@@ -131,7 +131,10 @@ export default function PaymentDetails() {
                         borderRadius: 2,
                         boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
                       }}
-                      onClick={() => window.open(link, "_blank")}
+                      onClick={() => {
+                        console.log("hello this is me");
+                        window.open(link, "_blank");
+                      }}
                     />
                   ))}
                 </Stack>

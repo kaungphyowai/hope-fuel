@@ -22,6 +22,7 @@ import SupportRegion from "../UI/Components/SupportRegion";
 import UserInfo from "../UI/Components/UserInfo";
 import HopeFuelIdStatus from "../UI/Components/HopeIdStatus";
 import SearchBarForm from "../search/page";
+import getScreenShotUrl from "../utilites/getScreenShotUrl";
 
 export default function PaymentDetails() {
   const searchParams = useSearchParams();
@@ -40,7 +41,27 @@ export default function PaymentDetails() {
           `/api/paymentDetails?HopeFuelID=${HopeFuelID}`
         );
         const result = await response.json();
+        console.log(result);
 
+        for (let i = 0; i < result.length; i++) {
+          if (Array.isArray(result[i]["ScreenShotLinks"])) {
+            console.log(result[i]["ScreenShotLinks"].length);
+            for (
+              let screenshot = 0;
+              screenshot < result[i]["ScreenShotLinks"].length;
+              screenshot++
+            ) {
+              console.log();
+              let tmp = await getScreenShotUrl(
+                result[i]["ScreenShotLinks"][screenshot]
+              );
+              result[i]["ScreenShotLinks"][screenshot] = tmp.href;
+            }
+          }
+        }
+
+        console.log("this is my data awesome");
+        console.log(result);
         if (result && result.length > 0) {
           const transactionData = result[0];
           setData(transactionData);
@@ -113,7 +134,11 @@ export default function PaymentDetails() {
                         borderRadius: 2,
                         boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
                       }}
-                      onClick={() => window.open(link, "_blank")}
+                      onClick={() => {
+                        console.log("hello this is me 2");
+                        console.log(link);
+                        window.open(link, "_blank");
+                      }}
                     />
                   ))}
                 </Stack>
