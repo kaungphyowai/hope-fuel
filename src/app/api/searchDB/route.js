@@ -18,6 +18,9 @@ async function getPaginatedData(page) {
   console.log("Fetching paginated data for page:", page);
   console.log("Offset:", offset, "Items Per Page:", itemsPerPage);
 
+  //get current Month
+  let currentMonth = new Date().getMonth() + 1;
+
   const query = `
   SELECT 
     C.CurrencyCode,
@@ -35,7 +38,7 @@ JOIN
 LEFT JOIN 
     ScreenShot S ON S.TransactionID = T.TransactionID
 WHERE 
-    MONTH(T.TransactionDate) = 11
+    MONTH(T.TransactionDate) = ${currentMonth}
     AND YEAR(T.TransactionDate) = YEAR(CURDATE())
 GROUP BY 
     T.TransactionID, C.CurrencyCode, Cu.Name, T.HopeFuelID
