@@ -25,6 +25,7 @@ import extendUserSubmit from "../utilites/ExtendUser/extendUserSubmit";
 import ExtendOrNot from "../createForm/extendOrNot";
 import Dropzone from "react-dropzone";
 import filehandler from "../utilites/createForm/fileHandler";
+import { set } from "date-fns";
 
 const ExtendUserForm = ({ userRole }) => {
   const user = useUser();
@@ -56,6 +57,11 @@ const ExtendUserForm = ({ userRole }) => {
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState("");
   const [fileExist, setFileExist] = useState(true);
+
+  //Validation
+  const [manyChatValidate, setManyChatValidate] = useState(false);
+  const [amountValidate, setAmountValidate] = useState(false);
+  const [monthValidate, setMonthValidate] = useState(false);
 
   const formFillingPerson = user?.Email || "Unknown User";
   console.log("formFillingPerson", formFillingPerson);
@@ -124,11 +130,17 @@ const ExtendUserForm = ({ userRole }) => {
       userInfo,
       amount,
       month,
+      setAmountValidate,
+      setMonthValidate,
+      setManyChatValidate,
       formFillingPerson,
       agentId,
       currency,
       supportRegion,
       files,
+      fileExist,
+      setFileExist,
+      wallets,
       manyChat,
       contactLink,
       notes
@@ -176,23 +188,44 @@ const ExtendUserForm = ({ userRole }) => {
             fullWidth
             required
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            error={amountValidate}
+            helperText={amountValidate && "Please enter a valid amount"}
             sx={{ mt: 2 }}
+            inputProps={{ min: "0", step: "0.01" }}
+            onChange={(e) => {
+              
+              const value = e.target.value;
+              setAmount(value);
+              if (!/^\d+(\.\d{0,2})?$/.test(value) || value <= 0) {
+                setAmountValidate(true); // Custom state to show error
+              } else {
+                setAmountValidate(false);
+              }
+            }}
           />
           <TextField
             label="Month"
             fullWidth
             required
             value={month}
-            onChange={(e) => setMonth(e.target.value)}
             sx={{ mt: 2 }}
+            error={monthValidate}
+            helperText={monthValidate && "Please enter a valid month"}
+            onChange={(e) => {
+              setMonth(e.target.value);
+              if (e.target.value < 1 || e.target.value > 12) {
+                setMonthValidate(true);
+              } else {
+                setMonthValidate(false);
+              }
+            }}
           />
 
           <FormLabel>Currency</FormLabel>
           <RadioGroup row onChange={(e) => setCurrency(e.target.value)}>
             {currencies.map((item) => (
               <FormControlLabel
-                key={item.CurrencyID}
+                key={item.CurrencyId}
                 value={item.CurrencyCode}
                 control={<Radio />}
                 label={item.CurrencyCode}

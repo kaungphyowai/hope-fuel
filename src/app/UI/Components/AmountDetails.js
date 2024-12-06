@@ -44,7 +44,7 @@ const AmountDetails = ({ amount }) => {
             Total Amount
           </Typography>
           <Typography variant="h4" color="primary" sx={{ fontWeight: "bold" }}>
-            {amount?.Amount || "N/A"}
+            {amount?.Amount ? parseFloat(amount?.Amount).toFixed(2) : "N/A"}
           </Typography>
         </Card>
 

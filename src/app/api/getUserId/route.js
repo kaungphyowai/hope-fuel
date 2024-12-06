@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic' // defaults to force-static
 //Output: customer record id
 
 
-export async function POST(request) {
+export async function GET(request) {
 
     let json = await request.json()
     //get the prf no

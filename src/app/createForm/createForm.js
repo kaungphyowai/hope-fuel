@@ -25,8 +25,8 @@ const CreateForm = ({ userInfo, setloading }) => {
   //console.log("UserInfo from createForm: ", userInfo);
   const user = useUser();
   const agent = useAgent();
-  console.log("User from CreateForm: ", user);
-  console.log("Agent from CreateForm: ", agent);
+ // console.log("User from CreateForm: ", user);
+ // console.log("Agent from CreateForm: ", agent);
 
   const formFillingPerson = user?.Name || "Unknown User";
 
@@ -37,9 +37,12 @@ const CreateForm = ({ userInfo, setloading }) => {
   const [supportRegions, setSupportRegions] = useState([]);
   const [currencies, setCurrencies] = useState([]);
   const [files, setFiles] = useState([]);
+
+  //checking validation
   const [amountValidate, setAmountValidate] = useState(false);
   const [monthValidate, setMonthValidate] = useState(false);
   const [manyChatValidate, setManyChatValidate] = useState(false);
+
   const [fileExist, setFileExist] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
@@ -138,6 +141,15 @@ const CreateForm = ({ userInfo, setloading }) => {
         margin="normal"
         error={amountValidate}
         helperText={amountValidate && "Please enter a valid amount"}
+        inputProps={{ min: "0", step: "0.01" }}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (!/^\d+(\.\d{0,2})?$/.test(value) || value < 0) {
+            setAmountValidate(true); // Custom state to show error
+          } else {
+            setAmountValidate(false);
+          }
+        }}
       />
 
       {/* Month Input */}
@@ -151,6 +163,13 @@ const CreateForm = ({ userInfo, setloading }) => {
         margin="normal"
         error={monthValidate}
         helperText={monthValidate && "Please enter a valid month"}
+        onChange={(e) => {
+          if (e.target.value < 1 || e.target.value > 12) {
+            setMonthValidate(true);
+          } else {
+            setMonthValidate(false);
+          }
+        }}
       />
 
       {/* Currency Selection */}
@@ -162,14 +181,14 @@ const CreateForm = ({ userInfo, setloading }) => {
       >
         {currencies.map((item) => (
           <FormControlLabel
-            key={item.CurrencyID}
+            key={item.CurrencyId}
             value={item.CurrencyCode}
             control={<Radio />}
             label={item.CurrencyCode}
           />
         ))}
       </RadioGroup>
-{/* wallet selection*/}
+      {/* wallet selection*/}
       <FormLabel id="wallets">Wallets</FormLabel>
       {wallets && wallets.length > 0 ? (
         <RadioGroup aria-labelledby="wallets-group-label" name="wallets">

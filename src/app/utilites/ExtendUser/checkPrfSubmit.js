@@ -2,7 +2,6 @@
 // return if user don't exist => side effect
 // if user exist => side effect + userInfo
 
-import { userInfo } from "os";
 
 export default async function checkPrfSubmit(
   prfno,

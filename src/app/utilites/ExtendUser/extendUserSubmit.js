@@ -3,7 +3,9 @@ export default async function extendUserSubmit(event,userInfo, currency, support
   event.preventDefault();
   
     const data = new FormData(event.currentTarget);
+   
     const amount = data.get("amount")
+    console.log("amount", amount);
     const month = data.get("month");
     const manychat = data.get('manyChat')
     const wallet = JSON.parse(data.get("wallets"))
@@ -41,7 +43,7 @@ export default async function extendUserSubmit(event,userInfo, currency, support
     console.log("tmp from extendUserSubmit:",tmp)
 
     //validate month and amount
-    if(!/^\d+$/g.test(amount))
+    if(!/^\d+(\.\d{1,2})?$/g.test(amount))
     {
       setAmountValidate(true);
       setloading(false)

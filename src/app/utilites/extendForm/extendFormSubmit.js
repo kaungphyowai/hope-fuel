@@ -45,8 +45,9 @@ export default async function extendFormSubmit(event, currency, supportRegion, f
     console.log(tmp)
 
     // validate month and amount
-    if(!/^\d+$/g.test(amount))
+    if(!/^\d+(\.\d{1,2})?$/.test(amount))
     {
+      console.log("Amount validation failed:", amount);
       setAmountValidate(true);
       setloading(false)
       return;
