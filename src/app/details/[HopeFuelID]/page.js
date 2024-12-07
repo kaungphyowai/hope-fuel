@@ -22,8 +22,7 @@ import SupportRegion from "../UI/Components/SupportRegion";
 import UserInfo from "../UI/Components/UserInfo";
 import HopeFuelIdStatus from "../UI/Components/HopeIdStatus";
 import SearchBarForm from "../search/page";
-import { set } from "date-fns";
-import { Agent } from "http";
+
 
 export default function PaymentDetails() {
   const searchParams = useSearchParams();

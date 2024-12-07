@@ -14,14 +14,14 @@ import {
   InputLabel,
   Divider,
 } from "@mui/material";
-import ActionButtons from "../UI/Components/ActionButton";
-import AmountDetails from "../UI/Components/AmountDetails";
-import CardsIssuedList from "../UI/Components/CardIssuedList";
-import CreatorInfo from "../UI/Components/CreatorInfo";
-import SupportRegion from "../UI/Components/SupportRegion";
-import UserInfo from "../UI/Components/UserInfo";
-import HopeFuelIdStatus from "../UI/Components/HopeIdStatus";
-import SearchBarForm from "../search/page";
+import ActionButtons from "../../UI/Components/ActionButton";
+import AmountDetails from "../../UI/Components/AmountDetails";
+import CardsIssuedList from "../../UI/Components/CardIssuedList";
+import CreatorInfo from "../../UI/Components/CreatorInfo";
+import SupportRegion from "../../UI/Components/SupportRegion";
+import UserInfo from "../../UI/Components/UserInfo";
+import HopeFuelIdStatus from "../../UI/Components/HopeIdStatus";
+import SearchBarForm from "../../search/page";
 
 export default function PaymentDetails() {
   const searchParams = useSearchParams();
@@ -29,7 +29,7 @@ export default function PaymentDetails() {
   const [data, setData] = useState(null);
   const [status, setStatus] = useState(1);
   const [note, setNote] = useState("");
-  const [url, setUrl] = useState("");
+
 
   // Fetch data based on HopeFuelID
   useEffect(() => {

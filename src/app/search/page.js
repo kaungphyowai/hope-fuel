@@ -19,9 +19,7 @@ export default function SearchBarForm({url}) {
     setNoResults(false);
 
     try {
-      // const url = HopeFuelID
-      //   ? `/api/searchDB?HopeFuelID=${HopeFuelID}&page=${page}`
-      //   : `/api/searchDB?page=${page}`;
+
       const apiUrl = `${url}?HopeFuelID=${HopeFuelID || ""}&page=${page}`;
 
       const response = await fetch(apiUrl);

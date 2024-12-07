@@ -38,12 +38,13 @@ export default function PaymentDetails() {
 
       try {
         const response = await fetch(
-          `/api/entryFormStatus?HopeFuelID=${HopeFuelID}`
+          `/api/paymentDetails?HopeFuelID=${HopeFuelID}`
         );
         const result = await response.json();
 
         if (result && result.length > 0) {
           const transactionData = result[0];
+          console.log("TransactionData:", transactionData);
           setData(transactionData);
           setNote(transactionData.Note || "");
           setStatus(transactionData.Status || 1);
