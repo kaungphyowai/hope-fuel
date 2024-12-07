@@ -19,11 +19,15 @@ async function getPaginatedData(page) {
   console.log("Offset:", offset, "Items Per Page:", itemsPerPage);
 
   const query = `
-  SELECT 
-    C.CurrencyCode,
-    Cu.Name AS CustomerName,
+SELECT 
+    T.TransactionID,
     T.HopeFuelID,
-    JSON_ARRAYAGG(S.ScreenShotLink) AS ScreenShotLinks
+    Cu.Name AS CustomerName,
+    T.Amount,
+    C.CurrencyCode,
+    TS.TransactionStatus,
+    JSON_ARRAYAGG(S.ScreenShotLink) AS ScreenShotLinks,
+    T.TransactionDate
 FROM 
     Transactions T
 JOIN 
@@ -32,16 +36,21 @@ JOIN
     Wallet W ON T.WalletID = W.WalletId
 JOIN 
     Currency C ON W.CurrencyId = C.CurrencyId
+JOIN 
+    FormStatus FS ON FS.TransactionID = T.TransactionID
+JOIN 
+    TransactionStatus TS ON FS.TransactionStatusID = TS.TransactionStatusID
 LEFT JOIN 
     ScreenShot S ON S.TransactionID = T.TransactionID
 WHERE 
-    MONTH(T.TransactionDate) = MONTH(CURDATE())
+    TS.TransactionStatusID = 1
+    AND MONTH(T.TransactionDate) = MONTH(CURDATE())
     AND YEAR(T.TransactionDate) = YEAR(CURDATE())
 GROUP BY 
-    T.TransactionID, C.CurrencyCode, Cu.Name, T.HopeFuelID
+    T.TransactionID, T.HopeFuelID, Cu.Name, T.Amount, C.CurrencyCode, TS.TransactionStatus, T.TransactionDate
 ORDER BY 
     T.TransactionDate DESC
-LIMIT ${offset},${itemsPerPage} ;
+    LIMIT 1,10 ;
   `;
 
   console.log("Query:", query);

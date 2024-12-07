@@ -30,6 +30,7 @@ export default function PaymentDetails() {
   const [status, setStatus] = useState(1);
   const [note, setNote] = useState("");
 
+
   // Fetch data based on HopeFuelID
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +38,7 @@ export default function PaymentDetails() {
 
       try {
         const response = await fetch(
-          `/api/paymentDetails?HopeFuelID=${HopeFuelID}`
+          `/api/entryFormStatus?HopeFuelID=${HopeFuelID}`
         );
         const result = await response.json();
 
@@ -63,7 +64,7 @@ export default function PaymentDetails() {
     return (
       <Box sx={{ display: "flex", height: "100vh" }}>
         <Box sx={{ width: 300, marginRight: 3 }}>
-          <SearchBarForm url={'/api/searchDB'} />
+          <SearchBarForm  url={'/api/entryFormStatus'}/>
         </Box>
         <Box
           sx={{
@@ -87,7 +88,7 @@ export default function PaymentDetails() {
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       <Box sx={{ width: 300, marginRight: 3 }}>
-        <SearchBarForm url={"/api/searchDB"}/>
+        <SearchBarForm url={"/api/entryFormStatus"} />
       </Box>
       <Box sx={{ flex: 1, padding: 4, backgroundColor: "#f5f5f5" }}>
         <Card sx={{ padding: 3, borderRadius: 5 }}>

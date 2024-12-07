@@ -4,7 +4,7 @@ import SearchBar from "../UI/Components/SearchBar";
 import { Container, Typography, CircularProgress } from "@mui/material";
 import ItemList from "../UI/Components/ItemList";
 
-export default function SearchBarForm() {
+export default function SearchBarForm({url}) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,11 +19,12 @@ export default function SearchBarForm() {
     setNoResults(false);
 
     try {
-      const url = HopeFuelID
-        ? `/api/searchDB?HopeFuelID=${HopeFuelID}&page=${page}`
-        : `/api/searchDB?page=${page}`;
+      // const url = HopeFuelID
+      //   ? `/api/searchDB?HopeFuelID=${HopeFuelID}&page=${page}`
+      //   : `/api/searchDB?page=${page}`;
+      const apiUrl = `${url}?HopeFuelID=${HopeFuelID || ""}&page=${page}`;
 
-      const response = await fetch(url);
+      const response = await fetch(apiUrl);
 
       if (!response.ok) {
         throw new Error("No item found");
