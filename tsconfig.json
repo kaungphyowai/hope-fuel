@@ -20,14 +20,16 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/app/api/uploadFile/route.js"  ],
+    "**/*.tsx",
+    "src/app/api/uploadFile/route.js"
+  ],
   "exclude": [
     "node_modules"
   ]
