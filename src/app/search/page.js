@@ -18,16 +18,31 @@ export default function SearchBarForm() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
 
+
+  //Select Wallet
+
+ const handleSelectedWallet = (wallet)=>{
+  console.log("Selcted wallet:",wallet);
+
+  setPage(1)
+  handleSearch(searchQuery,wallet)
+ }
+
+  
   // Function to fetch data from the API
-  const handleSearch = async (HopeFuelID) => {
-    console.log("HopeID is " + HopeFuelID);
+  const handleSearch = async (HopeFuelID, wallet) => {
+     if (!wallet) {
+       console.log("Wallet not ready, skipping search");
+       return; // Skip search if wallet is not ready
+     }
+    console.log("HopeID is " + HopeFuelID, "with Wallet"+ wallet);
     setLoading(true);
     setError(null);
     setNoResults(false);
     try {
       const url = HopeFuelID
         ? `/api/searchDB?HopeFuelID=${HopeFuelID}&page=${page}`
-        : `/api/searchDB?page=${page}`;
+        : `/api/searchDB?page=${page}&wallet=${wallet}`;
 
       const response = await fetch(url);
       console.log(response);
@@ -130,7 +145,7 @@ export default function SearchBarForm() {
           marginBottom: "16px",
         }}
       >
-        <WalletSelect />
+        <WalletSelect onWalletSelected={(wallet)=>handleSelectedWallet(wallet)}/> {/* select wallet from DB*/}
       </Box>
 
       {/* Conditional Rendering */}

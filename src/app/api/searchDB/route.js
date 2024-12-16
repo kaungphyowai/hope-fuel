@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import db from "../../utilites/db";
 import getScreenShotUrl from "../../utilites/getScreenShotUrl";
 // Function to fetch paginated data
-async function getPaginatedData(page) {
+async function getPaginatedData(page, selectedWallet) {
+  console.log("Selected Wallet from api: ", selectedWallet)
   const itemsPerPage = 10;
   const offset = (parseInt(page, 10) - 1) * itemsPerPage;
 
@@ -40,6 +41,7 @@ LEFT JOIN
 WHERE 
     MONTH(T.TransactionDate) = ${currentMonth}
     AND YEAR(T.TransactionDate) = YEAR(CURDATE())
+    AND W.WalletName = "${selectedWallet}"
 GROUP BY 
     T.TransactionID, C.CurrencyCode, Cu.Name, T.HopeFuelID
 ORDER BY 
@@ -86,8 +88,7 @@ async function searchByHopeFuelID(HopeFuelID) {
 
   try {
     const [rows] = await db(query, [HopeFuelID]);
-    console.log("Kaung row");
-    console.log(rows);
+   
     return rows ? [rows] : [];
   } catch (error) {
     console.error("Error fetching search data:", error);
@@ -99,6 +100,7 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const HopeFuelID = searchParams.get("HopeFuelID");
   const page = parseInt(searchParams.get("page"), 10) || 1;
+  const selectedWallet = searchParams.get("wallet") ||" " ;
 
   try {
     let data;
@@ -107,7 +109,7 @@ export async function GET(req) {
       data = await searchByHopeFuelID(HopeFuelID);
     } else {
       console.log(`Fetching paginated data for page: ${page}`);
-      data = await getPaginatedData(page);
+      data = await getPaginatedData(page, selectedWallet);
     }
 
     if (!data || data.length === 0) {

@@ -1,34 +1,40 @@
 import React, { useState , useEffect} from "react";
 import { Select, MenuItem, Typography, Box } from "@mui/material";
 
-const WalletSelect = () => {
-const [currentWallet, setCurrentWallet]= useState("Select Wallet");
+const WalletSelect = ({ onWalletSelected }) => {
+  const [currentWallet, setCurrentWallet] = useState("Select Wallet");
   const [wallets, setWallets] = useState([]);
 
+
   const handleChange = (event) => {
-    setCurrentWallet(event.target.value);
+    const wallet = event.target.value;
+    setCurrentWallet(wallet);
+    onWalletSelected(wallet);
   };
 
-  //getting all wallets from DB
-  useEffect(()=>{
-    const fetchAllWallets=async()=>{
-        try {
-            const response = await fetch(`/api/loadWalletByCurrency`);
-               const result = await response.json();
-               console.log("Wallets from DB", result);
-               setWallets(result);
-                  if (result.length > 0) {
-                    setCurrentWallet(result[0].WalletName); //default wallet
-                  }
+useEffect(() => {
+  const fetchAllWallets = async () => {
+    try {
+      const response = await fetch(`/api/loadWalletByCurrency`);
+      const result = await response.json();
+      console.log("Wallets from DB:", result);
+      setWallets(result);
 
-        } catch (error) {
-            
-        }
+      if (result.length > 0) {
+        setCurrentWallet(result[0].WalletName); // Set default wallet
+        onWalletSelected(result[0].WalletName); // Notify parent
+      } else {
+        onWalletSelected(""); // Notify parent of no wallets
+      }
+    } catch (error) {
+      console.error("Cannot fetch wallets from API");
+      onWalletSelected(""); // Notify parent of no wallets
     }
-    fetchAllWallets();
-  },[])
+  };
 
-  
+  fetchAllWallets();
+}, []);
+
 
   return (
     <Box display="flex" alignItems="center" gap={1}>
@@ -38,6 +44,7 @@ const [currentWallet, setCurrentWallet]= useState("Select Wallet");
         onChange={handleChange}
         variant="outlined"
         displayEmpty
+        fullWidth
         renderValue={() => (
           <Box
             sx={{
@@ -64,7 +71,6 @@ const [currentWallet, setCurrentWallet]= useState("Select Wallet");
           },
         }}
       >
-      
         {wallets.length > 0 ? (
           wallets.map((wallet, index) => (
             <MenuItem key={index} value={wallet.WalletName}>
