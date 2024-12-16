@@ -24,6 +24,7 @@ import HopeFuelIdStatus from "../UI/Components/HopeIdStatus";
 import SearchBarForm from "../search/page";
 import getScreenShotUrl from "../utilites/getScreenShotUrl";
 
+
 export default function PaymentDetails() {
   const searchParams = useSearchParams();
   const HopeFuelID = searchParams.get("HopeFuelID");
@@ -110,9 +111,11 @@ export default function PaymentDetails() {
       <Box sx={{ width: 300, marginRight: 3 }}>
         <SearchBarForm />
       </Box>
+
       <Box sx={{ flex: 1, padding: 4, backgroundColor: "#f5f5f5" }}>
         <Card sx={{ padding: 3, borderRadius: 5 }}>
           <Stack spacing={2}>
+           
             <HopeFuelIdStatus data={data} />
             <Divider />
 

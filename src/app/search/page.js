@@ -1,9 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import SearchBar from "../UI/Components/SearchBar";
-import { Container, Typography, CircularProgress } from "@mui/material";
+import { Container, Typography, CircularProgress, Box , Divider} from "@mui/material";
 import ItemList from "../UI/Components/ItemList";
 import getScreenShotUrl from "../utilites/getScreenShotUrl";
+import WalletSelect from "../UI/Components/GroupWallet";
+
+
+
+
 
 export default function SearchBarForm() {
   const [items, setItems] = useState([]);
@@ -104,7 +109,29 @@ export default function SearchBarForm() {
       }}
     >
       {/* Search Bar */}
-      <SearchBar onSearch={handleSearchChange} />
+      <Box sx={{ width: "100%" , marginTop: "3px"}}>
+        <SearchBar onSearch={handleSearchChange} />
+      </Box>
+
+      <Box sx={{ width: "100%", marginY: 2 }}>
+        <Divider sx={{ borderColor: "#e0e0e0", width: "100%" }} />
+      </Box>
+
+      {/* wallet select */}
+      <Box
+        component="section"
+        sx={{
+          width: 270,
+          paddingLeft: 2,
+          paddingRight: 2,
+
+          border: "1px solid #e0e0e0",
+          borderRadius: "30px",
+          marginBottom: "16px",
+        }}
+      >
+        <WalletSelect />
+      </Box>
 
       {/* Conditional Rendering */}
       {loading ? (
