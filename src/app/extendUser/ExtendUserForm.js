@@ -25,7 +25,6 @@ import extendUserSubmit from "../utilites/ExtendUser/extendUserSubmit";
 import ExtendOrNot from "../createForm/extendOrNot";
 import Dropzone from "react-dropzone";
 import filehandler from "../utilites/createForm/fileHandler";
-import { set } from "date-fns";
 
 const ExtendUserForm = ({ userRole }) => {
   const user = useUser();
@@ -38,6 +37,7 @@ const ExtendUserForm = ({ userRole }) => {
   const [hasPermissionThisMonth, setHasPermissionThisMonth] = useState(true);
   const [checkInputComplete, setCheckInputComplete] = useState(false);
   const [hasContinue, setHasContinue] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Form fields
   const [amount, setAmount] = useState("");
@@ -53,18 +53,18 @@ const ExtendUserForm = ({ userRole }) => {
   const [supportRegion, setSupportRegion] = useState("");
   const [supportRegions, setSupportRegions] = useState([]);
 
+
   // File handling
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState("");
   const [fileExist, setFileExist] = useState(true);
 
-  //Validation
+  // Validation
   const [manyChatValidate, setManyChatValidate] = useState(false);
   const [amountValidate, setAmountValidate] = useState(false);
   const [monthValidate, setMonthValidate] = useState(false);
 
   const formFillingPerson = user?.Email || "Unknown User";
-  console.log("formFillingPerson", formFillingPerson);
   const agentId = agent || "No Agent";
 
   // Fetch currencies, wallets, and support regions
@@ -102,11 +102,8 @@ const ExtendUserForm = ({ userRole }) => {
       setHasPermissionThisMonth,
       userRole
     );
-    console.log;
     setIsChecking(false);
   };
-  // Log userInfo to ensure it's an object and not a boolean
-  console.log("User Info after check:", userInfo);
 
   // Handle decline action
   const handleDecline = () => {
@@ -128,22 +125,18 @@ const ExtendUserForm = ({ userRole }) => {
     await extendUserSubmit(
       event,
       userInfo,
-      amount,
-      month,
-      setAmountValidate,
-      setMonthValidate,
-      setManyChatValidate,
-      formFillingPerson,
-      agentId,
       currency,
       supportRegion,
       files,
+      setLoading,
+      formFillingPerson,
+      setAmountValidate,
+      setMonthValidate,
+      setManyChatValidate,
       fileExist,
       setFileExist,
       wallets,
-      manyChat,
-      contactLink,
-      notes
+      agentId
     );
   };
 
@@ -152,7 +145,7 @@ const ExtendUserForm = ({ userRole }) => {
     await filehandler(acceptedFiles, setFiles, files, setUploadProgress);
     setFileExist(acceptedFiles.length > 0);
   };
-  console.log("userInfo", userInfo);
+
   return (
     <Box sx={{ mt: 4, marginLeft: 15, marginRight: 15 }}>
       <MuiOtpInput
@@ -185,6 +178,7 @@ const ExtendUserForm = ({ userRole }) => {
 
           <TextField
             label="Amount"
+            name="amount"
             fullWidth
             required
             value={amount}
@@ -193,11 +187,10 @@ const ExtendUserForm = ({ userRole }) => {
             sx={{ mt: 2 }}
             inputProps={{ min: "0", step: "0.01" }}
             onChange={(e) => {
-              
               const value = e.target.value;
               setAmount(value);
               if (!/^\d+(\.\d{0,2})?$/.test(value) || value <= 0) {
-                setAmountValidate(true); // Custom state to show error
+                setAmountValidate(true);
               } else {
                 setAmountValidate(false);
               }
@@ -205,6 +198,7 @@ const ExtendUserForm = ({ userRole }) => {
           />
           <TextField
             label="Month"
+            name="month"
             fullWidth
             required
             value={month}
@@ -241,16 +235,10 @@ const ExtendUserForm = ({ userRole }) => {
                   control={<Radio />}
                   label={wallet.WalletName}
                   key={wallet.WalletID}
-                  required={true}
-                  sx={{ mx: 1 }}
                 />
               ))}
             </RadioGroup>
           ) : (
-            <h1>No wallets selected.</h1>
-          )}
-
-          {wallets.length === 0 && currency && (
             <Typography>
               No wallets available for the selected currency.
             </Typography>
@@ -273,13 +261,14 @@ const ExtendUserForm = ({ userRole }) => {
             name="manyChat"
             type="text"
             error={manyChatValidate}
-            helperText={manyChatValidate && "ဂဏန်းဘဲသွင်းပါ"}
+            helperText={manyChatValidate && "Enter a valid number"}
           />
 
           <TextField
             margin="normal"
             fullWidth
             label="Contact Link"
+            name="contactLink"
             value={contactLink}
             onChange={(e) => setContactLink(e.target.value)}
           />
@@ -288,6 +277,7 @@ const ExtendUserForm = ({ userRole }) => {
             margin="normal"
             fullWidth
             label="Notes"
+            name="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
@@ -311,9 +301,9 @@ const ExtendUserForm = ({ userRole }) => {
             )}
           </Dropzone>
           {!fileExist && (
-            <p style={{ color: "red" }}>You need to have a file</p>
+            <Typography color="error">You need to upload a file</Typography>
           )}
-          {files.length != 0 && (
+          {files.length !== 0 && (
             <ImageList
               sx={{ width: 500, height: 200 }}
               cols={3}
@@ -321,7 +311,7 @@ const ExtendUserForm = ({ userRole }) => {
             >
               {files.map((item) => (
                 <ImageListItem key={item.href}>
-                  <img src={`${item.href}`} alt={"hello"} loading="lazy" />
+                  <img src={`${item.href}`} alt="Screenshot" loading="lazy" />
                 </ImageListItem>
               ))}
             </ImageList>
