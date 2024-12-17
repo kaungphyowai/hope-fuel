@@ -17,7 +17,7 @@ import {
 import ActionButtons from "../UI/Components/ActionButton";
 import AmountDetails from "../UI/Components/AmountDetails";
 import CardsIssuedList from "../UI/Components/CardIssuedList";
-import CreatorInfo from "../UI/Components/CreatorInfo";
+import CreatorInfo from "../UI/DetailPage/CreatorInfo";
 import SupportRegion from "../UI/Components/SupportRegion";
 import UserInfo from "../UI/Components/UserInfo";
 import HopeFuelIdStatus from "../UI/Components/HopeIdStatus";
