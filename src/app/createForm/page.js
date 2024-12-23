@@ -83,4 +83,4 @@ function CreateOrExtendPage() {
   );
 }
 
-export default withAuthenticator(CreateOrExtendPage);
+export default CreateOrExtendPage;

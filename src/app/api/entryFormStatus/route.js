@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import db from "../../utilites/db";
-import getScreenShotUrl from "../../utilites/getScreenShotUrl";
+
 // Function to fetch paginated data
-async function getPaginatedData(page, selectedWallet) {
-  console.log("Selected Wallet from api: ", selectedWallet)
+async function getPaginatedData(page) {
   const itemsPerPage = 10;
   const offset = (parseInt(page, 10) - 1) * itemsPerPage;
 
@@ -19,15 +18,16 @@ async function getPaginatedData(page, selectedWallet) {
   console.log("Fetching paginated data for page:", page);
   console.log("Offset:", offset, "Items Per Page:", itemsPerPage);
 
-  //get current Month
-  let currentMonth = new Date().getMonth() + 1;
-
   const query = `
-  SELECT 
-    C.CurrencyCode,
-    Cu.Name AS CustomerName,
+SELECT 
+    T.TransactionID,
     T.HopeFuelID,
-    JSON_ARRAYAGG(S.ScreenShotLink) AS ScreenShotLinks
+    Cu.Name AS CustomerName,
+    T.Amount,
+    C.CurrencyCode,
+    TS.TransactionStatus,
+    JSON_ARRAYAGG(S.ScreenShotLink) AS ScreenShotLinks,
+    T.TransactionDate
 FROM 
     Transactions T
 JOIN 
@@ -36,17 +36,21 @@ JOIN
     Wallet W ON T.WalletID = W.WalletId
 JOIN 
     Currency C ON W.CurrencyId = C.CurrencyId
+JOIN 
+    FormStatus FS ON FS.TransactionID = T.TransactionID
+JOIN 
+    TransactionStatus TS ON FS.TransactionStatusID = TS.TransactionStatusID
 LEFT JOIN 
     ScreenShot S ON S.TransactionID = T.TransactionID
 WHERE 
-    MONTH(T.TransactionDate) = MONTH(CURDATE())
+    TS.TransactionStatusID = 1
+    AND MONTH(T.TransactionDate) = MONTH(CURDATE())
     AND YEAR(T.TransactionDate) = YEAR(CURDATE())
-    AND W.WalletName = "${selectedWallet}"
 GROUP BY 
-    T.TransactionID, C.CurrencyCode, Cu.Name, T.HopeFuelID
+    T.TransactionID, T.HopeFuelID, Cu.Name, T.Amount, C.CurrencyCode, TS.TransactionStatus, T.TransactionDate
 ORDER BY 
     T.TransactionDate DESC
-LIMIT ${offset},${itemsPerPage} ;
+    LIMIT 1,10 ;
   `;
 
   console.log("Query:", query);
@@ -88,7 +92,6 @@ async function searchByHopeFuelID(HopeFuelID) {
 
   try {
     const [rows] = await db(query, [HopeFuelID]);
-   
     return rows ? [rows] : [];
   } catch (error) {
     console.error("Error fetching search data:", error);
@@ -100,7 +103,6 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const HopeFuelID = searchParams.get("HopeFuelID");
   const page = parseInt(searchParams.get("page"), 10) || 1;
-  const selectedWallet = searchParams.get("wallet") ||" " ;
 
   try {
     let data;
@@ -109,7 +111,7 @@ export async function GET(req) {
       data = await searchByHopeFuelID(HopeFuelID);
     } else {
       console.log(`Fetching paginated data for page: ${page}`);
-      data = await getPaginatedData(page, selectedWallet);
+      data = await getPaginatedData(page);
     }
 
     if (!data || data.length === 0) {

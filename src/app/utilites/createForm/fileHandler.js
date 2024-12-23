@@ -44,7 +44,7 @@ export default async function filehandler(
   for (let file in arrayFiles) {
     try {
       const result = await uploadData({
-        key: uuidv4(),
+        key: uuidv4() + arrayFiles[file].name,
         data: arrayFiles[file],
         options: {
           onProgress: ({ transferredBytes, totalBytes }) => {

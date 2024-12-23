@@ -142,6 +142,15 @@ console.log("User from ExtendForm: ", user);
         margin="normal"
         error={amountValidate}
         helperText={amountValidate && "Please enter a valid amount"}
+        inputProps={{ min: "0", step: "0.01" }}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (!/^\d+(\.\d{0,2})?$/.test(value) || value <= 0) {
+            setAmountValidate(true); // Custom state to show error
+          } else {
+            setAmountValidate(false);
+          }
+        }}
       />
 
       {/* Month Input */}
@@ -155,6 +164,13 @@ console.log("User from ExtendForm: ", user);
         margin="normal"
         error={monthValidate}
         helperText={monthValidate && "Please enter a valid month"}
+        onChange={(e) => {
+          if (e.target.value < 1 || e.target.value > 12) {
+            setMonthValidate(true);
+          } else {
+            setMonthValidate(false);
+          }
+        }}
       />
 
       {/* Currency Selection */}
@@ -166,7 +182,7 @@ console.log("User from ExtendForm: ", user);
       >
         {currencies.map((item) => (
           <FormControlLabel
-            key={item.CurrencyID}
+            key={item.CurrencyId}
             value={item.CurrencyCode}
             control={<Radio />}
             label={item.CurrencyCode}

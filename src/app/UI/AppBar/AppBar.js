@@ -26,36 +26,39 @@ const settings = [
   { icon: <LogoutIcon />, label: "Logout" },
 ];
 
-export default function ResponsiveAppBar({ userRole }) {
+export default function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const router = useRouter();
+  const { setUser, currentUser } = useUser();
 
   // Define navigation items
   let navItems = [];
 
-  if (userRole === "admin") {
+  if (currentUser == undefined) {
+    navItems = [{ label: "Still loading", path: "/createForm" }];
+  } else if (currentUser["UserRole"] === "Admin") {
     navItems = [
       { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
-      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      // { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
       // { label: "ဖောင်အဖွင့်အပိတ်", path: "/formToggle" },
-      { label: "ငွေစစ်ဆေးခြင်း", path: "/paymentCheck" },
-      { label: "ရှာဖွေခြင်း", path: "/search" },
-      { label: "HopeFuelDetail", path: "/details" },
+      // { label: "ငွေစစ်ဆေးခြင်း", path: "/entryForm" },
+      // { label: "ရှာဖွေခြင်း", path: "/search" },
+      // { label: "HopeFuelDetail", path: "/details" },
     ];
-  } else if (userRole === "Support Agent") {
+  } else if (currentUser["UserRole"] === "Support Agent") {
     navItems = [
       { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
-      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
-      { label: "ရှာဖွေခြင်း", path: "/search" },
-      { label: "HopeFuelDetail", path: "/details" },
+      // { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      // { label: "ရှာဖွေခြင်း", path: "/search" },
+      // { label: "HopeFuelDetail", path: "/details" },
     ];
-  } else {
+  } else if (currentUser["UserRole"] === "Payment Processor") {
     navItems = [
       { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
-      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
-      { label: "ငွေစစ်ဆေးခြင်း", path: "/paymentCheck" },
-      { label: "ရှာဖွေခြင်း", path: "/search" },
-      { label: "HopeFuelDetail", path: "/details" },
+      // { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      // { label: "ငွေစစ်ဆေးခြင်း", path: "/entryForm" },
+      // { label: "ရှာဖွေခြင်း", path: "/search" },
+      // { label: "HopeFuelDetail", path: "/details" },
     ];
   }
 
@@ -66,7 +69,6 @@ export default function ResponsiveAppBar({ userRole }) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const { setUser } = useUser();
 
   const handleUserMenuClick = async (setting) => {
     handleCloseUserMenu();
@@ -80,7 +82,7 @@ export default function ResponsiveAppBar({ userRole }) {
       case "Logout":
         await signOut({ global: true });
         setUser(null);
-        router.push("/login");
+        router.push("/");
         break;
       default:
         break;

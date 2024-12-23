@@ -14,7 +14,7 @@ import {
   InputLabel,
   Divider,
 } from "@mui/material";
-import ActionButtons from "../../UI/Components/ActionButtons";
+import ActionButtons from "../../UI/Components/ActionButton";
 import AmountDetails from "../../UI/Components/AmountDetails";
 import CardsIssuedList from "../../UI/Components/CardIssuedList";
 import CreatorInfo from "../../UI/Components/CreatorInfo";
@@ -23,7 +23,6 @@ import UserInfo from "../../UI/Components/UserInfo";
 import HopeFuelIdStatus from "../../UI/Components/HopeIdStatus";
 import SearchBarForm from "../../search/page";
 
-
 export default function PaymentDetails() {
   const searchParams = useSearchParams();
   const HopeFuelID = searchParams.get("HopeFuelID");
@@ -31,9 +30,11 @@ export default function PaymentDetails() {
   const [status, setStatus] = useState(1);
   const [note, setNote] = useState("");
 
+
   // Fetch data based on HopeFuelID
   useEffect(() => {
     const fetchData = async () => {
+        
       if (!HopeFuelID) return;
 
       try {
@@ -64,7 +65,7 @@ export default function PaymentDetails() {
     return (
       <Box sx={{ display: "flex", height: "100vh" }}>
         <Box sx={{ width: 300, marginRight: 3 }}>
-          <SearchBarForm url={"/api/searchDB"} />
+          <SearchBarForm  url={'/api/entryFormStatus'}/>
         </Box>
         <Box
           sx={{
@@ -88,9 +89,8 @@ export default function PaymentDetails() {
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       <Box sx={{ width: 300, marginRight: 3 }}>
-        <SearchBarForm url={"/api/searchDB"} />
+        <SearchBarForm  url={'/api/entryFormStatus'}/>
       </Box>
- 
       <Box sx={{ flex: 1, padding: 4, backgroundColor: "#f5f5f5" }}>
         <Card sx={{ padding: 3, borderRadius: 5 }}>
           <Stack spacing={2}>
@@ -115,10 +115,7 @@ export default function PaymentDetails() {
                         borderRadius: 2,
                         boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
                       }}
-                      onClick={() => {
-                        console.log("hello this is me");
-                        window.open(link, "_blank");
-                      }}
+                      onClick={() => window.open(link, "_blank")}
                     />
                   ))}
                 </Stack>

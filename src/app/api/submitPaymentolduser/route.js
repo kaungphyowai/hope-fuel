@@ -203,9 +203,7 @@ async function InsertCustomer(
   let lastDayOfthisMonth = calculateExpireDate(new Date(), 0, 0);
   console.log(lastDayOfthisMonth);
   console.log(expireDate);
-  let isEedCurrent =
-    expireDate.getFullYear() >= lastDayOfthisMonth.getFullYear() &&
-    expireDate.getMonth() >= lastDayOfthisMonth.getMonth();
+  let isEedCurrent = expireDate.getTime() >= lastDayOfthisMonth.getTime();
   console.log(expireDate.getDate());
   console.log(lastDayOfthisMonth.getDate());
   console.log("isEedCurrent is ");
@@ -371,6 +369,19 @@ export async function POST(req) {
 
     const transactionId = result.insertId;
     console.log("Transaction ID " + transactionId);
+
+    // create the status of the form
+    let queryStatus = `INSERT INTO FormStatus (TransactionID, TransactionStatusID) VALUES (?, ?)`;
+    const valueStatus = [transactionId, 1];
+    try {
+      let result = await db(queryStatus, valueStatus);
+    } catch (error) {
+      console.error("Error inserting FormStatus:", error);
+      return NextResponse.json(
+        { error: "Failed to insert FormStatus" },
+        { status: 500 }
+      );
+    }
 
     const screenShotIds = await createScreenShot(screenShot, transactionId);
     console.log("Screenshot ids are: " + screenShotIds);

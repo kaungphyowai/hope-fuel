@@ -5,7 +5,7 @@ import CreateFormPage from "./createForm/page";
 
 import { UserProvider } from "./context/UserContext";
 import { AgentProvider } from "./context/AgentContext";
-import { withAuthenticator } from "@aws-amplify/ui-react";
+import { Authenticator, withAuthenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 import awsconfig from "../aws-exports";
 
@@ -19,4 +19,4 @@ function App({ signOut, user }) {
   );
 }
 
-export default withAuthenticator(App);
+export default App;

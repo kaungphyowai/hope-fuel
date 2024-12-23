@@ -52,8 +52,7 @@ export async function POST(request) {
 
     let lastDayOfthisMonth = calculateExpireDate(new Date(), 0, 0);
     let isEedCurrent =
-      currentExpireDate.getFullYear() >= lastDayOfthisMonth.getFullYear() &&
-      currentExpireDate.getMonth() >= lastDayOfthisMonth.getMonth();
+      currentExpireDate.getTime() >= lastDayOfthisMonth.getTime();
     if (isEedCurrent) {
       nextExpireDate = calculateExpireDate(
         currentExpireDate,
@@ -101,19 +100,39 @@ export async function POST(request) {
   );
   const transactionId = rows.insertId;
 
+  // create the status of the form
+  const query = `INSERT INTO FormStatus (TransactionID, TransactionStatusID) VALUES (?, ?)`;
+  const values = [transactionId, 1];
+  try {
+    let result = await db(query, values);
+  } catch (error) {
+    console.error("Error inserting FormStatus:", error);
+    return NextResponse.json(
+      { error: "Failed to insert FormStatus" },
+      { status: 500 }
+    );
+  }
+
   // //update the expire date
   const value = [nextExpireDate, obj["customerId"]];
+  console.log("nextExpireDate is ");
+  console.log(nextExpireDate);
 
   const sql = `UPDATE Customer SET ExpireDate = ? WHERE CustomerID = ? LIMIT 1`;
   try {
     let result = await db(sql, value);
     // console.log("Result: ", result);
     console.log("Transaction ID is " + transactionId);
+
+    let timeZone = "Asia/Bangkok";
+    let transactionDateWithThailandTimeZone = moment()
+      .tz(timeZone)
+      .format("YYYY-MM-DD HH:mm:ss");
     await db(
       `INSERT INTO TransactionAgent (
           TransactionID, AgentID, LogDate
       ) VALUES (?, ?, ?)`,
-      [transactionId, obj["agentId"], new Date()]
+      [transactionId, obj["agentId"], transactionDateWithThailandTimeZone]
     );
     // add the transaction id and agentid in the same one
 

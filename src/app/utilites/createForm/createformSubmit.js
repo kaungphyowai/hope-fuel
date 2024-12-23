@@ -16,7 +16,9 @@ export default async function createFormSubmit(event, currency, supportRegion ,f
   const notes = data.get("notes");
   const contactLink = data.get("contactLink");
   //validate month and amount
-  if (!/^\d+$/g.test(amount)) {
+  if (!/^\d+(\.\d{1,2})?$/g.test(amount) || amount == "") {
+    
+    console.log("Amount validation failed:", amount);
     setAmountValidate(true);
     setloading(false);
     return;

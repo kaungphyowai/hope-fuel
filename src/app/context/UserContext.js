@@ -18,8 +18,19 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await getAuthCurrentUser();
+        let user = await getAuthCurrentUser();
+
+        const userRole = await (
+          await fetch(`/api/getAgent?awsId=${user.userId}`)
+        ).json();
+
+        user = {
+          ...user,
+          UserRoleId: userRole["data"]["UserRoleId"],
+          UserRole: userRole["data"]["UserRole"],
+        };
         console.log("User from UserContext:", user);
+
         setCurrentUser(user);
       } catch (error) {
         console.error("Failed to fetch user:", error);

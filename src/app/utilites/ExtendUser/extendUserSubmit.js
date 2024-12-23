@@ -1,227 +1,177 @@
-
-export default async function extendUserSubmit(event,userInfo, currency, supportRegion ,files, setloading, formFillingPerson, setAmountValidate, setmonthValidate, setmanyChatValidate, fileExist, setfileExist, wallets, agentId) {
+export default async function extendUserSubmit(
+  event,
+  userInfo,
+  currency,
+  supportRegion,
+  files,
+  setLoading,
+  formFillingPerson,
+  setAmountValidate,
+  setMonthValidate,
+  setManyChatValidate,
+  fileExist,
+  setFileExist,
+  wallets,
+  agentId
+) {
   event.preventDefault();
-  
-    const data = new FormData(event.currentTarget);
-    const amount = data.get("amount")
-    const month = data.get("month");
-    const manychat = data.get('manyChat')
-    const wallet = JSON.parse(data.get("wallets"))
-    const notes = data.get("notes")
-    const contactLink = data.get("contactLink")
-    let cardId = String(userInfo['prf_no'])
-    //if cardID exist for the extend user
-    if(cardId)
-    {
-      const regexp = /\d+/g;
-      cardId = cardId.match(regexp)[0];
-      cardId = parseInt(cardId)
-    }
 
-    const supportRegionID = supportRegion.SupportRegionID;
-    let expireDate = userInfo['expire_date']
-    if(expireDate)
-    {
-      expireDate = new Date(userInfo['expire_date'])
-    }
+  // Extract form data
+  const data = new FormData(event.currentTarget);
+  const amount = data.get("amount");
+  const month = data.get("month");
+  const manyChat = data.get("manyChat");
+  const wallet = JSON.parse(data.get("wallets") || "{}");
+  const notes = data.get("notes");
+  const contactLink = data.get("contactLink");
+  let cardId = String(userInfo["prf_no"]);
 
-    let tmp = {
-      amount,
-      month,
-      manychat,
-      agentId,
-      wallet,
-      notes,
-      contactLink,
-      supportRegionID,
-      files,
-      expireDate: expireDate,
-      cardID: cardId,
-    };
-    console.log("tmp from extendUserSubmit:",tmp)
+  // Process cardId if it exists
+  if (cardId) {
+    const regexp = /\d+/g;
+    cardId = cardId.match(regexp)?.[0];
+    cardId = parseInt(cardId, 10);
+  }
 
-    //validate month and amount
-    if(!/^\d+$/g.test(amount))
-    {
-      setAmountValidate(true);
-      setloading(false)
-      return;
-    }
-    if(!/^\d+$/g.test(month))
-    {
-      setmonthValidate(true);
-      setloading(false)
-      return;
-    }
-    if(!/^\d+$/g.test(manychat))
-    {
-      setmanyChatValidate(true);
-      setloading(false)
-      return;
-    }
+  const supportRegionID = supportRegion?.SupportRegionID || null;
+  let expireDate = userInfo["expire_date"]
+    ? new Date(userInfo["expire_date"])
+    : null;
 
-    //check if file exist
-    if(files.length == 0)
-    {
-      setfileExist(false);
-      setloading(false)
-      return;
-    }
-    // console.log("First URL of Image: " + files[0].href)
+  const tmp = {
+    amount,
+    month,
+    manyChat,
+    agentId,
+    wallet,
+    notes,
+    contactLink,
+    supportRegionID,
+    files,
+    expireDate,
+    cardID: cardId,
+  };
+  console.log("tmp from extendUserSubmit:", tmp);
 
-    // // check if the user exist in mysql
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+  // Validate amount
+  if (!/^\d+(\.\d{1,2})?$/.test(amount)) {
+    setAmountValidate(true);
+    setLoading(false);
+    return;
+  } else {
+    setAmountValidate(false);
+  }
 
+  // Validate month
+  if (!/^\d+$/.test(month)) {
+    setMonthValidate(true);
+    setLoading(false);
+    return;
+  } else {
+    setMonthValidate(false);
+  }
 
-    var raw = JSON.stringify({
-      "name": userInfo.name,
-      "email": userInfo.email
+  // Validate manyChat
+  if (!/^\d+$/.test(manyChat)) {
+    setManyChatValidate(true);
+    setLoading(false);
+    return;
+  } else {
+    setManyChatValidate(false);
+  }
+
+  // Check if files exist
+  if (!files || files.length === 0) {
+    setFileExist(false);
+    setLoading(false);
+    return;
+  }
+
+  try {
+    // Check if the user exists in MySQL
+    const customerCheckPayload = JSON.stringify({
+      name: userInfo.name,
+      email: userInfo.email,
+    });
+
+    let response = await fetch("/api/InCustomerTable/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: customerCheckPayload,
+    });
+    const customerCheckResult = await response.json();
+
+    // User exists
+    if (customerCheckResult?.Name) {
+      console.log("Existing customer found:", customerCheckResult);
+
+      // Insert note
+      const notePayload = JSON.stringify({
+        note: notes,
+        agentID: 1,
       });
-  
-      var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-      };
 
-    let res = await fetch('/api/InCustomerTable/', requestOptions)
-    let ans = await res.json()
+      response = await fetch("/api/insertNote/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: notePayload,
+      });
+      const noteResult = await response.json();
 
-    // // if the user already in mysql table
-    if(Object.hasOwn(ans, 'Name'))
-    {
-    console.log("this is here")
+      // Create transaction for existing user
+      const transactionPayload = JSON.stringify({
+        customerId: customerCheckResult["CustomerId"],
+        supportRegionId: supportRegionID,
+        walletId: wallet,
+        amount: amount,
+        agentId: agentId,
+        noteId: noteResult.id,
+        transactionDate: new Date(),
+        month: month,
+        screenShot: files.map((file) => ({ url: file.href })),
+        cardId: cardId,
+      });
 
-      // create a note
-      raw = JSON.stringify({
-        "note": notes,
-        "agentID": 1
-    })
-     requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-      };
+      response = await fetch(`/api/extendUser`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: transactionPayload,
+      });
 
-      let note = await fetch('/api/insertNote/', requestOptions)
-      note = await note.json();
+      console.log("Transaction response:", response);
+    } else {
+      // New customer flow
+      console.log("New customer detected. Proceeding with registration...");
 
+      const newCustomerPayload = JSON.stringify({
+        customerName: userInfo.name,
+        customerEmail: userInfo.email,
+        agentId: agentId,
+        supportRegionId: supportRegionID,
+        manyChatId: manyChat,
+        contactLink: contactLink,
+        amount: amount,
+        month: month,
+        note: notes,
+        walletId: wallet,
+        screenShot: files.map((file) => ({ url: file.href })),
+        expireDate: expireDate,
+        cardId: cardId,
+      });
 
-      myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      console.log(ans)
-      raw = JSON.stringify(
-        {
-          "customerId": ans["CustomerId"],
-          "supportRegionId": supportRegionID,
-          "walletId": wallet,
-          "amount": amount,
-          "agentId": agentId,
-          "noteId": note['id'],
-          "transactionDate": new Date(),
-          "month": month,
-          "screenShot": files.map((url) => {return {url: url.href}}),
-          "cardId": cardId
-      }
-      )
-    
-    console.log("Raw:"+ raw);
+      response = await fetch("/api/submitPaymentolduser/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: newCustomerPayload,
+      });
 
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-    };
-
-      let response = await fetch(`/api/extendUser`, requestOptions)
-      console.log("response from extendUser API: ", response);
-     location.reload()
+      const paymentResponse = await response.json();
+      console.log("New customer transaction status:", paymentResponse.status);
     }
 
-    else // treat this as new customer but get the requried user information from airtable
-    {
-    //   // // get customer information from airtable using name and email
-    //   // raw = JSON.stringify({
-    //   //   "name": userInfo.name, 
-    //   //   "email": userInfo.email
-    //   // })
-    //   // requestOptions = {
-    //   //   method: 'POST',
-    //   //   headers: myHeaders,
-    //   //   body: raw,
-    //   //   redirect: 'follow'
-    //   // };
-
-    //   // let response = await fetch('/api/checkuser' , requestOptions)
-    //   // response = response.json()
-  
-
-      
-
-    //   // submitpaymentinformation
-    let raw = JSON.stringify({
-      "customerName": userInfo.name,
-      "customerEmail": userInfo.email,
-      "agentId": agentId,
-      "supportRegionId": supportRegionID,
-      "manyChatId": manychat,
-      "contactLink": contactLink,
-      "amount": amount,
-      "month": month,
-      "note": notes,
-      "walletId": wallet,
-      "screenShot": files.map((url) => {return {url: url.href}}),
-      "expireDate": expireDate,
-      "cardId": cardId
-    })
-      requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-      let answ = await fetch('/api/submitPaymentolduser/', requestOptions)
-      let {status} =  await answ.json()
-      console.log(status)
-     location.reload()
-    }
-
-
-
-// var raw = JSON.stringify({
-//   "records": [
-//     {
-//       "fields": {
-//         "Name": userInfo.name,
-//         "Email": userInfo.email,
-//         "Status":  "၁ - ဖောင်တင်သွင်း",
-//         "Currency":  currency,
-//         "Amount": parseInt(amount),
-//         "Month": parseInt(month),
-//         "support_region": supportRegion,
-//         "notes": notes,
-//         "contact_person_link": contactLink,
-//         "wallet": [wallet.id],
-//         "screenshot": files.map((url) => {return {url: url.href}}),
-//         "notion_form_filled_person": formFillingPerson,
-//         "manychat_id": parseInt(manychat)
-//       }
-//     }
-//   ]
-// });
-// console.log(raw)
-
-// var requestOptions = {
-//   method: 'POST',
-//   headers: myHeaders,
-//   body: raw,
-//   redirect: 'follow'
-// };
-
-//   let response = await fetch(`/api/createNewUser`, requestOptions)
-//   location.reload();
+    location.reload();
+  } catch (error) {
+    console.error("Error in extendUserSubmit:", error);
+    setLoading(false);
+  }
 }

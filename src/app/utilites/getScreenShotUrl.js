@@ -23,3 +23,4 @@ export default async function getScreenShotUrl(url) {
   console.log("URL expires at: ", linkToStorageFile.expiresAt);
   return linkToStorageFile.url;
 }
+ 

@@ -1,17 +1,20 @@
 import React from "react";
 import { Box, Chip, Typography } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
-function ItemCard({ item, onClick }) {
+function ItemCard({ item, onClick ,}) {
   const router = useRouter();
+  const pathname = usePathname();
 
   // Safely access properties using optional chaining (?.)
   const handleClick = () => {
     onClick(item?.HopeFuelID); // Trigger the callback function to navigate
-    if (item?.HopeFuelID) {
-      router.push(`/details?HopeFuelID=${item.HopeFuelID}`);
-    }
-    console.log(item);
+     if (pathname === "/entryForm") {
+        router.push(`/entryForm?HopeFuelID=${item.HopeFuelID}`);
+      } else if (pathname === "/details") {
+        router.push(`/details?HopeFuelID=${item.HopeFuelID}`);
+      }
+    
   };
 
   return (

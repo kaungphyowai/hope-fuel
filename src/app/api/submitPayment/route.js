@@ -89,7 +89,13 @@ async function createScreenShot(screenShot, transactionsID) {
 //Insert Into TransactionAgent Table
 async function InsertTransactionLog(transactionId, agentId) {
   const query = `INSERT INTO TransactionAgent(TransactionID, AgentID, LogDate) VALUES (?, ?, ?)`;
-  const values = [transactionId, agentId, new Date()];
+
+  let timeZone = "Asia/Bangkok";
+  let transactionDateWithThailandTimeZone = moment()
+    .tz(timeZone)
+    .format("YYYY-MM-DD HH:mm:ss");
+
+  const values = [transactionId, agentId, transactionDateWithThailandTimeZone];
   try {
     const result = await db(query, values);
     console.log("result " + result);
