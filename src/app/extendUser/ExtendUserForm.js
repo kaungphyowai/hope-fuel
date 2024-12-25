@@ -15,6 +15,7 @@ import {
   Autocomplete,
   ImageList,
   ImageListItem,
+  Stack,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useUser } from "../context/UserContext";
@@ -25,10 +26,12 @@ import extendUserSubmit from "../utilites/ExtendUser/extendUserSubmit";
 import ExtendOrNot from "../createForm/extendOrNot";
 import Dropzone from "react-dropzone";
 import filehandler from "../utilites/createForm/fileHandler";
+import { useRouter } from "next/navigation";
 
-const ExtendUserForm = ({ userRole }) => {
+const ExtendUserForm = () => {
   const user = useUser();
   const agent = useAgent();
+  const router = useRouter();
 
   const [otp, setOtp] = useState("");
   const [userInfo, setUserInfo] = useState({});
@@ -53,7 +56,6 @@ const ExtendUserForm = ({ userRole }) => {
   const [supportRegion, setSupportRegion] = useState("");
   const [supportRegions, setSupportRegions] = useState([]);
 
-
   // File handling
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState("");
@@ -64,7 +66,7 @@ const ExtendUserForm = ({ userRole }) => {
   const [amountValidate, setAmountValidate] = useState(false);
   const [monthValidate, setMonthValidate] = useState(false);
 
-  const formFillingPerson = user?.Email || "Unknown User";
+  const formFillingPerson = user?.email || "Unknown User";
   const agentId = agent || "No Agent";
 
   // Fetch currencies, wallets, and support regions
@@ -93,14 +95,13 @@ const ExtendUserForm = ({ userRole }) => {
   const handleOtpComplete = async (value) => {
     setCheckInputComplete(true);
     setIsChecking(true);
-
     await checkPrfSubmit(
       value,
       setUserExist,
       setIsChecking,
       setUserInfo,
       setHasPermissionThisMonth,
-      userRole
+      user["currentUser"]["UserRole"]
     );
     setIsChecking(false);
   };
@@ -155,6 +156,41 @@ const ExtendUserForm = ({ userRole }) => {
         onChange={setOtp}
       />
 
+      {/* //if the user don't exist */}
+      {!userExist && checkInputComplete && !isChecking && (
+        <>
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            ဒီ user မရှိပါဘူး — <strong>အရင်စာရင်းသွင်းပါ</strong>
+          </Alert>
+          <Stack
+            spacing={2}
+            direction="row"
+            justifyContent={"flex-end"}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            <Button
+              variant="contained"
+              onClick={() => {
+                setOtp("");
+                setCheckInputComplete(false);
+              }}
+            >
+              သက်တမ်းပြန်တိုးမယ်
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                router.push("/createForm"); // reload the page
+              }}
+            >
+              အသစ်သွင်းမယ်
+            </Button>
+          </Stack>
+        </>
+      )}
+
       {isChecking && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
           <CircularProgress />
@@ -162,6 +198,37 @@ const ExtendUserForm = ({ userRole }) => {
         </Box>
       )}
 
+      {userExist &&
+        !isChecking &&
+        checkInputComplete &&
+        !hasPermissionThisMonth &&
+        user["currentUser"]["UserRole"] != "Admin" && (
+          <h1>
+            ယခုလအတွင်း ဖော်ပြပါထောက်ပို့တပ်သားအတွက် စာရင်းသွင်းထားပြီးပါပြီ။
+            ထူးခြားဖြစ်စဥ် ဖြစ်ပါက Admin ကိုဆက်သွယ်ပါ
+          </h1>
+        )}
+
+      {/* for the admin */}
+      {userExist &&
+        !isChecking &&
+        checkInputComplete &&
+        !hasPermissionThisMonth &&
+        user["currentUser"]["UserRole"] == "Admin" && (
+          <>
+            <h1>
+              ဒီ user က ဒီလအတွက် သွင်းပြီးသွားပါပြီ။ Admin
+              အနေနဲ့ဆက်ဖြည့်ချင်ပါသလား။
+            </h1>
+            <ExtendOrNot
+              userInfo={userInfo}
+              onConfirm={() => setHasContinue(true)}
+              onDecline={handleDecline}
+            />
+          </>
+        )}
+
+      {/* for the user */}
       {!isChecking && userExist && !hasContinue && hasPermissionThisMonth && (
         <ExtendOrNot
           userInfo={userInfo}

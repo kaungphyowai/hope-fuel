@@ -391,7 +391,7 @@ export async function POST(req) {
       `INSERT INTO TransactionAgent (
           TransactionID, AgentID, LogDate
       ) VALUES (?, ?, ?)`,
-      [transactionId, agentId, new Date()]
+      [transactionId, agentId, transactionDateWithThailandTimeZone]
     );
     return Response.json({ status: "success" });
   } catch (error) {

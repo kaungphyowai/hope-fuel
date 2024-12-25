@@ -15,6 +15,7 @@ SELECT
     w.WalletName,
     t.Month,
     t.Amount,
+    t.NoteID, 
     t.TransactionDate,
     cu.CurrencyCode,
     c.ManyChatId,
@@ -45,6 +46,7 @@ GROUP BY
     w.WalletName,
     t.Month,
     t.Amount,
+    t.NoteID,
     t.TransactionDate,
     cu.CurrencyCode,
     c.ManyChatId,
@@ -60,6 +62,7 @@ GROUP BY
 
   try {
     const result = await db(query, [HopeFuelID]);
+    console.log(result[0]);
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json({ error: "Database error" }, { status: 500 });

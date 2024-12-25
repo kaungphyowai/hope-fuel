@@ -1,17 +1,13 @@
 "use client";
 
 import React from "react";
-import { UserProvider , useUser } from "../context/UserContext";
+import { UserProvider, useUser } from "../context/UserContext";
 import { AgentProvider } from "../context/AgentContext";
 import ExtendUserForm from "./ExtendUserForm";
 import { Box, Typography, Avatar } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const ExtendUserPage = () => {
-  const user = useUser();
-   const userRole = user?.userRole ;
-   console.log("User",user);
-
   return (
     <UserProvider>
       <AgentProvider>
@@ -31,7 +27,7 @@ const ExtendUserPage = () => {
           <Typography component="h1" variant="h5">
             Extend User Membership
           </Typography>
-          <ExtendUserForm userRole={userRole} />
+          <ExtendUserForm />
         </Box>
       </AgentProvider>
     </UserProvider>

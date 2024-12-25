@@ -1,38 +1,51 @@
-import { Alert, AlertTitle, Autocomplete, Box, Button, CircularProgress, FormControlLabel, FormLabel, ImageList, ImageListItem, Radio, RadioGroup, Stack, TextField } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import extendUserSubmit from '../../utilites/ExtendUser/extendUserSubmit'
-import { styled } from '@mui/material/styles';
-import { UserContext, AgentContext } from '../../HomePage';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import filehandler from '../../utilites/createForm/fileHandler';
-import checkPrfSubmit from '../../utilites/ExtendUser/checkPrfSubmit'
-import {SUPPORTREGIONCONST} from '../../variables/const'
-import { MuiOtpInput } from 'mui-one-time-password-input';
-import { ExtendOrNot } from '../ExtendOrNot';
-import Dropzone from 'react-dropzone'
+import {
+  Alert,
+  AlertTitle,
+  Autocomplete,
+  Box,
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  FormLabel,
+  ImageList,
+  ImageListItem,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField,
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import extendUserSubmit from "../../utilites/ExtendUser/extendUserSubmit";
+import { styled } from "@mui/material/styles";
+import { UserContext, AgentContext } from "../../HomePage";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import filehandler from "../../utilites/createForm/fileHandler";
+import checkPrfSubmit from "../../utilites/ExtendUser/checkPrfSubmit";
+import { SUPPORTREGIONCONST } from "../../variables/const";
+import { MuiOtpInput } from "mui-one-time-password-input";
+import { ExtendOrNot } from "../ExtendOrNot";
+import Dropzone from "react-dropzone";
 
-
-
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
-const ExtendUserForm = ({userRole}) => {
+const ExtendUserForm = ({ userRole }) => {
   const [loading, setloading] = useState(false);
   //LOAD THE WALLETS
   const [wallets, setwallets] = useState();
   const [currency, setcurrency] = useState();
-  const [currencies, setCurrencies] = useState([])
+  const [currencies, setCurrencies] = useState([]);
   const [supportRegion, setsupportRegion] = useState("choose your region");
-    const [supportRegions, setsupportRegions] = useState([]);
+  const [supportRegions, setsupportRegions] = useState([]);
   const [userInfo, setUserInfo] = useState({});
   const [files, setfiles] = useState([]);
 
@@ -66,28 +79,27 @@ const ExtendUserForm = ({userRole}) => {
     }
   }, [currency]);
 
-//LoadSupportRegion
-    useEffect(() => {
-      fetch("/api/loadSupportRegion")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("loadSupportRegionResponse:", data);
-          setsupportRegions(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching support regions:", error);
-        });
-    }, []);
+  //LoadSupportRegion
+  useEffect(() => {
+    fetch("/api/loadSupportRegion")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("loadSupportRegionResponse:", data);
+        setsupportRegions(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching support regions:", error);
+      });
+  }, []);
 
-    // load currencies when component mount
-    useEffect(() => {
-      fetch("/api/getCurrencies")
+  // load currencies when component mount
+  useEffect(() => {
+    fetch("/api/getCurrencies")
       .then((response) => response.json())
       .then((data) => {
         setCurrencies(data);
-      })
-    }, [])
-
+      });
+  }, []);
 
   const formFillingPerson = useContext(UserContext).username;
   const [otp, setOtp] = React.useState("");
@@ -96,7 +108,7 @@ const ExtendUserForm = ({userRole}) => {
     setOtp(newValue);
   };
 
-let agentId = useContext(AgentContext).id;;
+  let agentId = useContext(AgentContext).id;
 
   return (
     <>
@@ -204,8 +216,7 @@ let agentId = useContext(AgentContext).id;;
         <Box
           component="form"
           onSubmit={(event) =>
-           
-            console.log("submitting ", event)||
+            console.log("submitting ", event) ||
             extendUserSubmit(
               event,
               userInfo,
@@ -408,6 +419,6 @@ let agentId = useContext(AgentContext).id;;
       )}
     </>
   );
-}
+};
 
-export default ExtendUserForm
+export default ExtendUserForm;

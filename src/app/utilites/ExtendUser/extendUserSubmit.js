@@ -1,3 +1,5 @@
+import { useAgent } from "../../context/AgentContext";
+
 export default async function extendUserSubmit(
   event,
   userInfo,
@@ -108,7 +110,7 @@ export default async function extendUserSubmit(
       // Insert note
       const notePayload = JSON.stringify({
         note: notes,
-        agentID: 1,
+        agentID: agentId,
       });
 
       response = await fetch("/api/insertNote/", {
@@ -131,6 +133,10 @@ export default async function extendUserSubmit(
         screenShot: files.map((file) => ({ url: file.href })),
         cardId: cardId,
       });
+
+      console.log("TransactionPayload is ");
+
+      console.log(JSON.stringify(transactionPayload));
 
       response = await fetch(`/api/extendUser`, {
         method: "POST",
@@ -168,7 +174,6 @@ export default async function extendUserSubmit(
       const paymentResponse = await response.json();
       console.log("New customer transaction status:", paymentResponse.status);
     }
-
     location.reload();
   } catch (error) {
     console.error("Error in extendUserSubmit:", error);

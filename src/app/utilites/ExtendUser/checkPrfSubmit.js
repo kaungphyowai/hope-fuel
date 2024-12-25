@@ -2,7 +2,6 @@
 // return if user don't exist => side effect
 // if user exist => side effect + userInfo
 
-
 export default async function checkPrfSubmit(
   prfno,
   setuserExist,
@@ -54,9 +53,16 @@ export default async function checkPrfSubmit(
     setisChecking(false);
 
     return;
-  } else if (Object.hasOwn(res, "Name")) {
+  }
+
+  /**
+   * Permission for the user
+   * */
+
+  if (Object.hasOwn(res, "Name")) {
     // if mysql has the user
     // check to see if the user has permission
+
     var raw = JSON.stringify({
       name: res["Name"],
       email: res["Email"],
@@ -77,8 +83,9 @@ export default async function checkPrfSubmit(
       setisChecking(false);
       setHasPermissonThisMonth(res1);
       setuserExist(true);
-      console.log("user role from checjprf: ", userRole[0]);
-      if (userRole[0] == "admin") {
+      console.log("user role from checjprf: ", userRole);
+
+      if (userRole == "Admin") {
         setUserInfo({
           name: res["Name"],
           email: res["Email"],
@@ -123,7 +130,7 @@ export default async function checkPrfSubmit(
       setisChecking(false);
       setHasPermissonThisMonth(bool);
       setuserExist(true);
-      if (userRole[0] == "admin") {
+      if (userRole == "Admin") {
         setUserInfo({
           name: json.name,
           email: json.email,

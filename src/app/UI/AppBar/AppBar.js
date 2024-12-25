@@ -39,24 +39,24 @@ export default function ResponsiveAppBar() {
   } else if (currentUser["UserRole"] === "Admin") {
     navItems = [
       { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
-      // { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
       // { label: "ဖောင်အဖွင့်အပိတ်", path: "/formToggle" },
-      // { label: "ငွေစစ်ဆေးခြင်း", path: "/entryForm" },
+      { label: "ငွေစစ်ဆေးခြင်း", path: "/entryForm" },
       // { label: "ရှာဖွေခြင်း", path: "/search" },
       // { label: "HopeFuelDetail", path: "/details" },
     ];
   } else if (currentUser["UserRole"] === "Support Agent") {
     navItems = [
       { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
-      // { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
       // { label: "ရှာဖွေခြင်း", path: "/search" },
       // { label: "HopeFuelDetail", path: "/details" },
     ];
   } else if (currentUser["UserRole"] === "Payment Processor") {
     navItems = [
       { label: "အသစ်သွင်းခြင်း", path: "/createForm" },
-      // { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
-      // { label: "ငွေစစ်ဆေးခြင်း", path: "/entryForm" },
+      { label: "သက်တမ်းတိုးခြင်း", path: "/extendUser" },
+      { label: "ငွေစစ်ဆေးခြင်း", path: "/entryForm" },
       // { label: "ရှာဖွေခြင်း", path: "/search" },
       // { label: "HopeFuelDetail", path: "/details" },
     ];
