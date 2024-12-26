@@ -1,9 +1,14 @@
 import React from "react";
 import { Stack, Button, Typography } from "@mui/material";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
+
+import { redirect } from "next/dist/server/api-utils";
 
 const ActionButtons = ({ data }) => {
   const [loading, setLoading] = React.useState(false);
   const [confirmDenyFlag, setConfirmDenyFlag] = React.useState(null);
+  const route = useRouter();
 
   if (!data || !data.HopeFuelID) {
     console.error("Invalid data passed to ActionButtons:", data);
@@ -47,13 +52,57 @@ const ActionButtons = ({ data }) => {
     }
   };
 
+  const handleConfirm = async () => {
+    setLoading(true);
+
+    const payload = {
+      transactionId: data.HopeFuelID,
+      agentId: data.AgentId,
+    };
+
+    try {
+      const response = await fetch("/api/confirmTransaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      setLoading(false);
+      location.reload();
+    } catch (error) {
+      console.error("error updating the confirm status");
+    }
+    route.push("/entryForm");
+    location.reload();
+  };
+
+  const handleDenied = async () => {
+    setLoading(true);
+    const payload = {
+      transactionId: data.HopeFuelID,
+      agentId: data.AgentId,
+    };
+
+    try {
+      const response = await fetch("/api/deniedTransaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error("error updating the deny status");
+    }
+    route.push("/entryForm");
+    location.reload();
+  };
+
   return (
     <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
       <Button
         variant="contained"
         color="error"
         sx={{ width: "150px" }}
-        onClick={() => handleAction(0)}
+        onClick={handleConfirm}
         disabled={loading}
       >
         Confirm
@@ -62,7 +111,7 @@ const ActionButtons = ({ data }) => {
         variant="outlined"
         color="error"
         sx={{ width: "150px" }}
-        onClick={() => handleAction(1)}
+        onClick={handleDenied}
         disabled={loading}
       >
         Deny

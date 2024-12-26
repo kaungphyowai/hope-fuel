@@ -19,44 +19,89 @@ async function getPaginatedData(page) {
   console.log("Offset:", offset, "Items Per Page:", itemsPerPage);
 
   const query = `
-SELECT 
-    T.TransactionID,
-    T.HopeFuelID,
-    Cu.Name AS CustomerName,
-    T.Amount,
-    C.CurrencyCode,
-    TS.TransactionStatus,
-    JSON_ARRAYAGG(S.ScreenShotLink) AS ScreenShotLinks,
-    T.TransactionDate
+
+  SELECT 
+
+  T.TransactionID,
+
+  T.HopeFuelID,
+
+  Cu.Name AS CustomerName,
+
+  T.Amount,
+
+  C.CurrencyCode,
+
+  TS.TransactionStatus,
+
+  JSON_ARRAYAGG(S.ScreenShotLink) AS ScreenShotLinks,
+
+  T.TransactionDate
+
 FROM 
-    Transactions T
+
+  Transactions T
+
 JOIN 
-    Customer Cu ON T.CustomerID = Cu.CustomerId
+
+  Customer Cu ON T.CustomerID = Cu.CustomerId
+
 JOIN 
-    Wallet W ON T.WalletID = W.WalletId
+
+  Wallet W ON T.WalletID = W.WalletId
+
 JOIN 
-    Currency C ON W.CurrencyId = C.CurrencyId
+
+  Currency C ON W.CurrencyId = C.CurrencyId
+
 JOIN 
-    FormStatus FS ON FS.TransactionID = T.TransactionID
+
+  FormStatus FS ON FS.TransactionID = T.TransactionID
+
 JOIN 
-    TransactionStatus TS ON FS.TransactionStatusID = TS.TransactionStatusID
+
+  TransactionStatus TS ON FS.TransactionStatusID = TS.TransactionStatusID
+
 LEFT JOIN 
-    ScreenShot S ON S.TransactionID = T.TransactionID
+
+  ScreenShot S ON S.TransactionID = T.TransactionID
+
 WHERE 
-    TS.TransactionStatusID = 1
-    AND MONTH(T.TransactionDate) = MONTH(CURDATE())
-    AND YEAR(T.TransactionDate) = YEAR(CURDATE())
+
+  FS.TransactionStatusID = ?
+
+  AND MONTH(T.TransactionDate) = MONTH(CURDATE())
+
+  AND YEAR(T.TransactionDate) = YEAR(CURDATE())
+
 GROUP BY 
-    T.TransactionID, T.HopeFuelID, Cu.Name, T.Amount, C.CurrencyCode, TS.TransactionStatus, T.TransactionDate
+
+  T.TransactionID, 
+
+  T.HopeFuelID, 
+
+  Cu.Name, 
+
+  T.Amount, 
+
+  C.CurrencyCode, 
+
+  TS.TransactionStatus, 
+
+  T.TransactionDate
+  
+
 ORDER BY 
-    T.TransactionDate DESC
-    LIMIT 1,10 ;
+
+  T.TransactionDate DESC
+LIMIT 10;
+  
   `;
 
   console.log("Query:", query);
 
   try {
-    const rows = await db(query);
+    const rows = await db(query, [1]);
     console.log("Fetched paginated data:", rows);
     return rows;
   } catch (error) {
